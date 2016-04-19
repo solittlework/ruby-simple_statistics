@@ -22,6 +22,11 @@ Gem::Specification.new do |spec|
     raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
   end
 
+  #Without following command, when you rake install, you are expected to get error:
+  #ERROR:  While executing gem ... (Gem::InvalidSpecificationException)
+  #See http://stackoverflow.com/questions/24452167/ruby-gem-wont-build-geminvalidspecificationexception-are-not-files
+  spec.files.grep(%r{^bin/}) { |f| f[3..-1] }
+
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }

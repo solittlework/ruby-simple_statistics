@@ -133,10 +133,10 @@ extout_prefix =
 target_prefix = 
 LOCAL_LIBS = 
 LIBS = $(LIBRUBYARG_SHARED)  -lpthread -ldl -lcrypt -lm   -lc
-ORIG_SRCS = sstat_wrap.cxx sstat.cpp
+ORIG_SRCS = sstat.c
 SRCS = $(ORIG_SRCS) 
-OBJS = sstat_wrap.o sstat.o
-HDRS = $(srcdir)/sstat.hpp
+OBJS = sstat.o
+HDRS = $(srcdir)/sstat_func.h $(srcdir)/sstat.h $(srcdir)/utility.h
 TARGET = sstat
 TARGET_NAME = sstat
 TARGET_ENTRY = Init_$(TARGET_NAME)
@@ -231,7 +231,7 @@ site-install-rb: install-rb
 $(DLLIB): $(OBJS) Makefile
 	$(ECHO) linking shared-object $(DLLIB)
 	-$(Q)$(RM) $(@)
-	$(Q) $(LDSHAREDXX) -o $@ $(OBJS) $(LIBPATH) $(DLDFLAGS) $(LOCAL_LIBS) $(LIBS)
+	$(Q) $(LDSHARED) -o $@ $(OBJS) $(LIBPATH) $(DLDFLAGS) $(LOCAL_LIBS) $(LIBS)
 
 
 

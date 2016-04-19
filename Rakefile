@@ -4,11 +4,19 @@ require 'rake/clean'
 desc 'Build the sstat C extension'
 task :build_ext do
   Dir.chdir("ext/") do
-    sh "swig -ruby -c++ sstat.i"
-    ruby "extconf.rb"
+    #sh "swig -ruby -c++ sstat.i"
+    sh "ruby extconf.rb --enable-static"
     sh "make"
   end
   cp "ext/sstat.so", "lib/"
+end
+
+task :install do
+  Dir.chdir("ext/") do
+  	Dir.chdir("gsl-2.1/") do
+  		sh "./configure && make && sudo make install" # 
+  	end
+  end
 end
 
 desc 'sstat test'

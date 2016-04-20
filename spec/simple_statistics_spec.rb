@@ -13,6 +13,13 @@ def array_to_double(array)
 	return float_array
 end
 
+def array_to_censored(array)
+  int_array = []
+  array.map{ |x| int_array.push(x.to_i)}
+  return int_array
+end
+
+
 describe SimpleStatistics do
   it 'has a version number' do
     expect(SimpleStatistics::VERSION).not_to be nil
@@ -43,6 +50,17 @@ describe SimpleStatistics do
     expect(sstat_instance.index_less_equal(s, 18.023)).to be 4395
   end
 
+  it 'check kaplan meier function' do
+    sstat_instance = SStat::Basic.new
+    testing_file = Dir.pwd + '/spec/testing_data/testing_dataset_1.csv'
+    time = read_csv_by_column(testing_file, 'E_T')
+    cens = read_csv_by_column(testing_file, 'Cens')
+    time = array_to_double(time)
+    cens = array_to_censored(cens)
+    res = sstat_instance.kaplan_meier(time, cens)
+    expect(res["time"].last.round(3)).to be 18.612
+    expect(res["prob"].first.round(3)).to be 0.995
+  end
 
 
 end

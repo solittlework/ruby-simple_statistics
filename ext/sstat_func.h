@@ -1,9 +1,8 @@
 #ifndef _SSTAT_FUNC_H_
 #define _SSTAT_FUNC_H_
-struct point {
-	double x;
-	double y;
-}
+#include "data_type.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 double precentile(double* array, int size, double target_percentile)
 {
@@ -24,20 +23,10 @@ double precentile(double* array, int size, double target_percentile)
 	return array[size -1];
 }
 
-int index_less_equal(double*array, int size, double target)
+int index_less_equal(double* array, int size, double target)
 {
 	int i;
-	for(i = 0; i < size; i++)
-	{
-		if(array[i] > target)
-			return i;
-	}
-	return i;
-}
 
-int index_less_equal(double*array, int size, double target)
-{
-	int i;
 	for(i = 0; i < size; i++)
 	{
 		if(array[i] > target)
@@ -47,194 +36,152 @@ int index_less_equal(double*array, int size, double target)
 	return i;
 }
 
-point* kaplan_meier(double* event_time, bool* censored, int size)
+struct curve kaplan_meier(double* time, int* censored, int size)
 {
-	quick_sort_simultaneous(event_time, censored, size);
-	int i;	
-	// extract uncensored data points
-	vector<sample_type> sample_uncens;
-	int uncensored_num = 0;
-	
+
+	int i, count, KM_size,
+		KM_count_at, num_uncensored_at, num_censored_at,
+		N;
+	double KM_tp_at;
+	double tmp;
+	// sort time and censored based on time together, time can censored array
+	struct point* time_censored_array = (struct point*) malloc(size * sizeof(struct point));
+
+	for(i=0; i <size; i++)
+	{
+		time_censored_array[i].x = time[i];
+		//not very fast here, prefer to define another point
+		if(censored[i] > 0)
+			time_censored_array[i].y = 1;
+		else
+			time_censored_array[i].y = -1;
+	}
+
+	qsort(time_censored_array, size, sizeof(struct point), &point_compare_x);
+
+	//count unique uncensored time point for KM
+	count = 0;
 	for(i = 0; i < size; i++)
 	{
-		if(censored[i] == false)
-			uncensored_num += 1;
+		if(time_censored_array[i].y < 0)
+		{
+			if(count == 0)
+			{
+				count++;
+				tmp = time_censored_array[i].x;
+			}
+
+			if(count > 0)
+			{
+				if (time_censored_array[i].x != tmp)
+				{
+					count++;
+					tmp = time_censored_array[i].x;
+				}
+			}
+		}
 	}
 
-	double uncensored_time(double *)malloc(sizeof(double)*size);
+	KM_size = count;
+	//kaplan_meier time point is the unique uncensored time
+	double* KM_tp = (double *) malloc(KM_size * sizeof(double));
 
-	// Kaplan-Meier curve changes only at times when there is an uncensored event
-	vector<D_T> event_time_uncens;
-
-	// start graph at time=0
-	event_time_uncens.push_back(0);
-
-	for(auto& s : sample_uncens)
+	count = 0;
+	for(i = 0; i < size; i++)
 	{
-		event_time_uncens.push_back(s.second);
+		if(time_censored_array[i].y < 0)
+		{
+			if(count == 0)
+			{
+				count++;
+				KM_tp[count] = time_censored_array[i].x;
+				tmp = time_censored_array[i].x;
+
+			}
+
+			if(count > 0)
+			{
+				if (time_censored_array[i].x != tmp)
+				{
+					KM_tp[count] = time_censored_array[i].x;
+
+					count++;
+					tmp = time_censored_array[i].x;
+				}
+			}
+		}
 	}
 
-	//remove the duplicates in the event_time_uncens
-	event_time_uncens.erase (
-		unique (
-			event_time_uncens.begin(),
-			event_time_uncens.end()
-		),
-		event_time_uncens.end()
-	);
+	//number of uncensored in KM for corresponding time pont
+	int* num_uncensored_KM = (int *) malloc(count * sizeof(int));
 
-	
-	D_T bound = event_time_uncens.front();
+	//number of censored in KM for corresponding time pont
+	int* num_censored_KM = (int *) malloc(count * sizeof(int));
 
-	/* 
-	   event_time_uncens = {0, t1, t2, t3, ..., tn} (t_i < t_{i+1})
-	   we now need to partition samples into groups g_i where each sample in 
-	   g_i has event time e_i with  t_{i-1} < e_i <= t_i
-	*/
+	//record current KM time point
+	KM_tp_at = KM_tp[0];
+	KM_count_at = 0;
+	num_uncensored_at = 0;
+	num_censored_at = 0;
 
-	/* first -> number of uncensored in group i
-		second -> nubmer of censored in group i
-	*/
-	pair<size_t, size_t> group_i;
-
-
-	size_t group_number = 0; //remember first in event_time_uncens is 0, which we start at probability 1
-	for(auto & s : samples)
+	for(i = 0; i < size; i++)
 	{
-		if(s.second <= bound) // event occurs before t_i
-		{	//censored
-			if(s.first)
-				group_i.second++;
+		if(time_censored_array[i].x <= KM_tp_at)
+		{
+			if (time_censored_array[i].y > 0)
+				num_censored_at++;
 			else
-				group_i.first++;
-		} else { // event occurs after t_i, so finished with g_i
+				num_uncensored_at++;
 
-			KM_group.push_back(group_i); // add g_i to our queue
+			if(i == size-1)
+			{
+				num_uncensored_KM[KM_count_at] = num_uncensored_at;
+				num_censored_KM[KM_count_at] = num_censored_at;
+			}
 
-			// initialize g_{i+1}
-			group_i.first = 0;  
-			group_i.second = 0;
+		} else {
+			num_uncensored_KM[KM_count_at] = num_uncensored_at;
+			num_censored_KM[KM_count_at] = num_censored_at;
+			KM_count_at++;
 
-			if (event_time_uncens.size()==group_number+1)
-				break;
-			bound = event_time_uncens.at(group_number + 1);
-			group_number++;
-
-			if(s.first)
-				group_i.second++;
+			num_uncensored_at = 0;
+			num_censored_at = 0;
+			KM_tp_at = KM_tp[KM_count_at];
+			//Notice we still need to update here
+			if (time_censored_array[i].y > 0)
+				num_censored_at++;
 			else
-				group_i.first++;
+				num_uncensored_at++;
 		}
 	}
 
-	D_T n_i = static_cast<D_T>(sample_len);  // number of samples surviving up to g_i
-	D_T d_i = 0;                             // number of uncensored events in g_i
-	D_T c_i = 0;                             // number of censored events in g_i
-	D_T KM_i = 1;                            // = probability of event occurring after t_i  (p(0)=1)
+	struct point* KM = (struct point*) malloc(size * sizeof(struct point));
+	count = sizeof time_censored_array;
 
-	Array KM_p;
+	//Total size of sample
+	N = size;
 
-	for(size_t i = 0; i < KM_group.size(); ++i)
-  	{
-		if (i>0) { // remove samples who's events occurred in previous interval
-      		n_i = n_i - KM_group[i-1].first - KM_group[i-1].second;
-    	}
-
-    	d_i = KM_group[i].first;
-    	c_i = KM_group[i].second;
-
-    	// our convention: if censored event occurs at same time as uncensored, we assume censored event happened "nanoseconds" before
-    	// eg. if 100 people initially, and 1 death and 1 censoring at time 1, we assume prob of living past time 1 is 98/99 (rather than 99/100 if opposite convention)
-      	KM_i = static_cast<D_T>(n_i - d_i - c_i) / (n_i - c_i) * KM_i;
-    	KM_p.push_back(KM_i);
+	for(i = 0; i < KM_size; i++)
+	{
+		if(i > 0)
+		{
+			N = (N - num_uncensored_KM[i-1] - num_censored_KM[i-1]);
+			KM[i].x = KM_tp[i];
+			KM[i].y = 1.0 * (N - num_uncensored_KM[i] - num_censored_KM[i]) / (N - num_censored_KM[i]) * KM[i-1].y;
+		} else {
+			KM[0].x = KM_tp[0];
+			KM[0].y = 1.0 * (N - num_uncensored_KM[0] - num_censored_KM[0]) / (N - num_censored_KM[0]);
+		}
 	}
 	
-	// now combine probabilities with corresponding times into one data structure
-	Curve KM;
-
-	for(size_t i = 0; i < event_time_uncens.size(); ++i)
-  	{
-		KM.x_axis.push_back(event_time_uncens[i]);
-		KM.y_axis.push_back(KM_p[i]);
-	}
-
-	if(KM.y_axis.back()!= 0)
-	{
-		KM.y_axis.back() = 0;
-	}
-
-	/**
-	 if KM does not end with zero, we extend it with line of best fit through the final 3 points.
-	*/
-	if(KM.y_axis.back() != 0)
-	{
-		if(DEBUG)
-		{
-			write_log(string("A"), string("KM_extend_log"));
-		}
-
-		size_t KM_size = KM.x_axis.size();
-		Array last_time_points;
-		Array last_KM_prob_points;
-		size_t num_for_fitting = 5 > KM_size ? KM_size: 5;
-		if(DEBUG)
-		{
-			write_log(string("Before linear regression"), string("KM_extend_log"));
-		}
-
-		string last_KM_log = "";
-
-		// collect final N points of current KM curve for fitting a line
-		for(int i = num_for_fitting; i > 0 ; i--)
-		{
-
-			last_KM_log += ( string("(") + to_string(KM.x_axis[KM_size - i]) + string(", ") + to_string(KM.y_axis[KM_size - i]) + string("), "));
-
-			last_time_points.push_back(KM.x_axis[KM_size - i]);
-			last_KM_prob_points.push_back(KM.y_axis[KM_size - i]);
-		}
-
-		if(DEBUG)
-		{
-			write_log(last_KM_log, string("KM_extend_log"));
-		}
-		// determine slope and intercept of best line
-		auto line = linear_regression(last_time_points, last_KM_prob_points);
-
-		if(DEBUG)
-		{
-			write_log(string("After linear regression"), string("KM_extend_log"));
-			write_log(to_string(line.slope), string("KM_extend_log"));
-			write_log(to_string(line.intercept), string("KM_extend_log"));
-		}
-
-		assert(line.slope < 0);
-
-		// determine x-intercept so we know when to stop adding points to curve
-		double x_intercept = -line.intercept/line.slope;
-		double time_spacing = (last_time_points.back() - last_time_points.front())/(last_time_points.size()-1);
-		assert(time_spacing > 0);
-
-		// add equally spaced points to KM curve along line of best fit
-		double t = last_time_points.back()+time_spacing;
-
-		while (t < x_intercept)
-		{
-			double prob = t*line.slope + line.intercept;
-			if (prob > KM.y_axis.back()) // line of best fit doesn't necessarily go through final point, so make sure we are decreasing
-				prob = KM.y_axis.back();
-			KM.x_axis.push_back(t);
-			KM.y_axis.push_back(prob);
-			t += time_spacing;
-		}
-		// end KM curve at 0
-		KM.x_axis.push_back(x_intercept);
-		KM.y_axis.push_back(0);
-	} 
-
-	return KM;
+	curve KM_curve;
+	KM_curve.point_arr = KM;
+	KM_curve.size = KM_size;
+	free(time_censored_array);
+	free(KM_tp);
+	free(num_uncensored_KM);
+	free(num_censored_KM);
+	return KM_curve;
 }
-
-
 
 #endif

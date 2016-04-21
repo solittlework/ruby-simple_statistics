@@ -55,8 +55,8 @@ static VALUE rb_kaplan_meier(VALUE self, VALUE time, VALUE censored)
 
   for(i = 0; i< KM_curve.size; i++)
   {
-    rb_ary_store(KM_x, i, DBL2NUM(KM_curve.point_arr[i].x));
-    rb_ary_store(KM_y, i, DBL2NUM(KM_curve.point_arr[i].y));
+    rb_ary_store(KM_x, i, DBL2NUM(KM_curve.point_array[i].x));
+    rb_ary_store(KM_y, i, DBL2NUM(KM_curve.point_array[i].y));
   }
   result = rb_hash_new();
   rb_hash_aset(result, rb_str_new2("time"), KM_x);
@@ -64,6 +64,6 @@ static VALUE rb_kaplan_meier(VALUE self, VALUE time, VALUE censored)
 
   free(_time);
   free(_censored);
-  free(KM_curve.point_arr);
+  free(KM_curve.point_array);
   return result;
 }

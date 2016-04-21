@@ -7,7 +7,7 @@ typedef struct point{
 } point;
 
 typedef struct curve{
-	struct point* point_arr;
+	struct point* point_array;
 	int size;
 } curve;
 

@@ -1,0 +1,98 @@
+ruby extconf.rb --enable-static
+creating Makefile
+make
+compiling sstat.c
+In file included from sstat.h:6:0,
+                 from sstat.c:1:
+utility.h: In function ‘create_sorted_unique_array’:
+utility.h:24:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+  int count;
+  ^
+utility.h:50:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+  double * unique_arr = (double *) malloc(count * sizeof(double));
+  ^
+utility.h: In function ‘merge_two_array’:
+utility.h:91:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+  int total_size = size_1 + size_2;
+  ^
+In file included from sstat.h:7:0,
+                 from sstat.c:1:
+sstat_func.h: In function ‘count_at_risk’:
+sstat_func.h:35:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+  int count = 0;
+  ^
+sstat_func.h:58:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+  double* unique_uncensored_time = (double *) malloc(count * sizeof(double));
+  ^
+sstat_func.h:86:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+  int* num_uncensored = (int *) malloc(count * sizeof(int));
+  ^
+sstat_func.h:126:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+  at_risk_array at_risk_result;
+  ^
+sstat_func.h: In function ‘log_rank_test’:
+sstat_func.h:179:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+  double Z = 0;
+  ^
+In file included from sstat.h:7:0,
+                 from sstat.c:1:
+sstat_func.h:189:32: warning: assignment from incompatible pointer type [enabled by default]
+  combined_at_risk_1.uncensored = (double*) malloc(combined_time_pnts.size * sizeof(double));
+                                ^
+sstat_func.h:190:30: warning: assignment from incompatible pointer type [enabled by default]
+  combined_at_risk_1.censored = (double*) malloc(combined_time_pnts.size * sizeof(double));
+                              ^
+sstat_func.h:192:32: warning: assignment from incompatible pointer type [enabled by default]
+  combined_at_risk_2.uncensored = (double*) malloc(combined_time_pnts.size * sizeof(double));
+                                ^
+sstat_func.h:193:30: warning: assignment from incompatible pointer type [enabled by default]
+  combined_at_risk_2.censored = (double*) malloc(combined_time_pnts.size * sizeof(double));
+                              ^
+sstat_func.h:200:26: warning: assignment makes pointer from integer without a cast [enabled by default]
+  combined_at_risk_2.time = combined_time_pnts.size;
+                          ^
+sstat_func.h:204:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+  double* N1_at_risk = (double*) malloc(time_pnt_size * sizeof(double));
+  ^
+sstat_func.h: In function ‘kaplan_meier’:
+sstat_func.h:293:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+  struct point* KM = (struct point*) malloc(at_risk.size * sizeof(struct point));
+  ^
+sstat_func.h:308:2: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+  curve KM_curve;
+  ^
+sstat.c: In function ‘rb_kaplan_meier’:
+sstat.c:53:3: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
+   VALUE KM_x = rb_ary_new2(KM_curve.size);
+   ^
+sstat.c: In function ‘rb_log_rank_test’:
+sstat.c:79:52: error: ‘size’ undeclared (first use in this function)
+   double* time_1 = (double *)malloc(sizeof(double)*size);
+                                                    ^
+sstat.c:79:52: note: each undeclared identifier is reported only once for each function it appears in
+sstat.c:91:3: warning: passing argument 2 of ‘log_rank_test’ from incompatible pointer type [enabled by default]
+   _Z = log_rank_test(time_1, cens_1, time_2,cens_2, size_1, size_2);
+   ^
+In file included from sstat.h:7:0,
+                 from sstat.c:1:
+sstat_func.h:167:8: note: expected ‘int *’ but argument is of type ‘double *’
+ double log_rank_test(double* time_1, int* censored_1, double* time_2, int* censored_2, int size_1, int size_2)
+        ^
+sstat.c:91:3: warning: passing argument 4 of ‘log_rank_test’ from incompatible pointer type [enabled by default]
+   _Z = log_rank_test(time_1, cens_1, time_2,cens_2, size_1, size_2);
+   ^
+In file included from sstat.h:7:0,
+                 from sstat.c:1:
+sstat_func.h:167:8: note: expected ‘int *’ but argument is of type ‘double *’
+ double log_rank_test(double* time_1, int* censored_1, double* time_2, int* censored_2, int size_1, int size_2)
+        ^
+make: *** [sstat.o] Error 1
+rake aborted!
+Command failed with status (2): [make...]
+/home/chizhang/workspace/c_to_ruby/ruby-simple_statistics/Rakefile:9:in `block (2 levels) in <top (required)>'
+/home/chizhang/workspace/c_to_ruby/ruby-simple_statistics/Rakefile:6:in `chdir'
+/home/chizhang/workspace/c_to_ruby/ruby-simple_statistics/Rakefile:6:in `block in <top (required)>'
+/home/chizhang/.rvm/gems/ruby-2.1.1/bin/ruby_executable_hooks:15:in `eval'
+/home/chizhang/.rvm/gems/ruby-2.1.1/bin/ruby_executable_hooks:15:in `<main>'
+Tasks: TOP => build_ext
+(See full trace by running task with --trace)

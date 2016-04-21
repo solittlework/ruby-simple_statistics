@@ -67,3 +67,35 @@ static VALUE rb_kaplan_meier(VALUE self, VALUE time, VALUE censored)
   free(KM_curve.point_array);
   return result;
 }
+
+static VALUE rb_log_rank_test(VALUE self, VALUE _time_1, VALUE _cens_1, VALUE _time_2, VALUE _cens_2)
+{
+  int size_1 = RARRAY_LEN(_time_1);
+  int size_2 = RARRAY_LEN(_time_2);
+
+  int i;
+  double _Z;
+
+  double* time_1 = (double *)malloc(sizeof(double)*size_1);
+  double* time_2 = (double *)malloc(sizeof(double)*size_2);
+  int* cens_1 = (double *)malloc(sizeof(double)*size_1);
+  int* cens_2 = (double *)malloc(sizeof(double)*size_2);
+
+  for (i = 0; i < size_1; i++) {
+    time_1[i] = NUM2DBL(rb_ary_entry(_time_1, i));
+    cens_1[i] = NUM2INT(rb_ary_entry(_cens_1, i));
+  }
+
+  for (i = 0; i < size_2; i++) {
+    time_2[i] = NUM2DBL(rb_ary_entry(_time_2, i));
+    cens_2[i] = NUM2INT(rb_ary_entry(_cens_2, i));
+  }
+  _Z = log_rank_test(time_1, cens_1, time_2,cens_2, size_1, size_2);
+
+  free(time_1);
+  free(time_2);
+  free(cens_1);
+  free(cens_2);
+
+  return DBL2NUM(_Z);
+}

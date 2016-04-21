@@ -9,13 +9,21 @@ end
 
 def array_to_double(array)
 	float_array = []
-	array.map{ |x| float_array.push(x.to_f)}
+	array.map{ |x| 
+    if not x.nil?
+      float_array.push(x.to_f)
+    end
+  }
 	return float_array
 end
 
 def array_to_censored(array)
   int_array = []
-  array.map{ |x| int_array.push(x.to_i)}
+  array.map{ |x|
+    if not x.nil?
+      int_array.push(x.to_i)
+    end
+  }
   return int_array
 end
 
@@ -62,5 +70,22 @@ describe SimpleStatistics do
     expect(res["prob"].first.round(3)).to be 0.995
   end
 
+  it 'check z log rank function' do
+    sstat_instance = SStat::Basic.new
+    testing_file = Dir.pwd + '/spec/testing_data/testing_log_rank.csv'
+    time_1 = read_csv_by_column(testing_file, 'E_T_2')
+    cens_1 = read_csv_by_column(testing_file, 'Cens_2')
+    time_2 = read_csv_by_column(testing_file, 'E_T_1')
+    cens_2 = read_csv_by_column(testing_file, 'Cens_1')
+
+    time_1 = array_to_double(time_1)
+    cens_1 = array_to_censored(cens_1)
+
+    time_2 = array_to_double(time_2)
+    cens_2 = array_to_censored(cens_2)
+
+    res = sstat_instance.log_rank_test(time_1, cens_1,time_2,cens_2)
+    puts res
+  end
 
 end

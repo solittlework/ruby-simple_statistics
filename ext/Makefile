@@ -11,12 +11,12 @@ ECHO = $(ECHO1:0=@echo)
 #### Start of system configuration section. ####
 
 srcdir = .
-topdir = /home/paul/.rvm/rubies/ruby-2.1.1/include/ruby-2.1.0
+topdir = /home/chizhang/.rvm/rubies/ruby-2.1.1/include/ruby-2.1.0
 hdrdir = $(topdir)
-arch_hdrdir = /home/paul/.rvm/rubies/ruby-2.1.1/include/ruby-2.1.0/x86_64-linux
+arch_hdrdir = /home/chizhang/.rvm/rubies/ruby-2.1.1/include/ruby-2.1.0/x86_64-linux
 PATH_SEPARATOR = :
 VPATH = $(srcdir):$(arch_hdrdir)/ruby:$(hdrdir)/ruby
-prefix = $(DESTDIR)/home/paul/.rvm/rubies/ruby-2.1.1
+prefix = $(DESTDIR)/home/chizhang/.rvm/rubies/ruby-2.1.1
 rubysitearchprefix = $(rubylibprefix)/$(sitearch)
 rubyarchprefix = $(rubylibprefix)/$(arch)
 rubylibprefix = $(libdir)/$(RUBY_BASE_NAME)
@@ -136,7 +136,7 @@ LIBS = $(LIBRUBYARG_SHARED)  -lpthread -ldl -lcrypt -lm   -lc
 ORIG_SRCS = sstat.c
 SRCS = $(ORIG_SRCS) 
 OBJS = sstat.o
-HDRS = $(srcdir)/sstat_func.h $(srcdir)/data_type.h $(srcdir)/sstat.h $(srcdir)/utility.h
+HDRS = $(srcdir)/data_type.h $(srcdir)/sstat_func.h $(srcdir)/sstat.h $(srcdir)/utility.h
 TARGET = sstat
 TARGET_NAME = sstat
 TARGET_ENTRY = Init_$(TARGET_NAME)

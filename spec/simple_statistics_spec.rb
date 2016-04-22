@@ -27,7 +27,6 @@ def array_to_censored(array)
   return int_array
 end
 
-
 describe SimpleStatistics do
   it 'has a version number' do
     expect(SimpleStatistics::VERSION).not_to be nil
@@ -39,7 +38,8 @@ describe SimpleStatistics do
   	array = read_csv_by_column(testing_file, 'Median')
   	array = array_to_double(array)
   	s = array.sort
-
+    #function of percentile_index is not as expected
+    expect(sstat_instance.percentile_index(s, 0.25)).to be 1098
     expect(sstat_instance.percentile(s, 0.25)).to be 15.254
     expect(sstat_instance.percentile(s, 0.5)).to be 16.26
     expect(sstat_instance.percentile(s, 0.75)).to be 17.166

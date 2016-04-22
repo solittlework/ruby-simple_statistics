@@ -78,7 +78,7 @@ int find_first_index_has(double* arr, int size, double value)
 	int i;
 	for(i = 0; i < size; i++)
 	{
-		if(fabs(arr[i] - value) < EPS)
+		if(fabs(arr[i] - value) < EPSILON)
 		{
 			return i;
 		}

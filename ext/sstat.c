@@ -99,3 +99,9 @@ static VALUE rb_log_rank_test(VALUE self, VALUE _time_1, VALUE _cens_1, VALUE _t
 
   return DBL2NUM(_Z);
 }
+
+static VALUE rb_cdf_unormal_Q(VALUE self, VALUE x)
+{
+  double Q = cdf_ugaussian_Q(NUM2DBL(x));
+  return DBL2NUM(Q);
+}

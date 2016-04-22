@@ -88,4 +88,10 @@ describe SimpleStatistics do
     expect(res.round(3)).to be -3.860
   end
 
+  it 'check cdf for uniformly normal distribution Q function' do
+    sstat_instance = SStat::Basic.new
+    res = sstat_instance.cdf_unormal_Q(3.860003615)
+    expect(res.round(7)).to be 0.0000567
+  end
+
 end

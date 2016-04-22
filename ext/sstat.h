@@ -3,9 +3,8 @@
 #include <ruby.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "utility.h"
-#include "sstat_func.h"
-#include "data_type.h"
+#include "lib/survival.h"
+#include "lib/global_utility.h"
 
 static VALUE rb_percentile(VALUE self, VALUE arg, VALUE target);
 static VALUE rb_index_less_equal(VALUE self, VALUE arg, VALUE target);

@@ -6,7 +6,7 @@ static VALUE rb_percentile(VALUE self, VALUE array, VALUE target)
   int i;
   double _target = NUM2DBL(target);
   double _percentile;
-  double* c_array = (double *)malloc(sizeof(double)*size);
+  double* c_array = (double *)malloc(sizeof(double) * size);
 
   for (i = 0; i < size; i++) {
     c_array[i] = NUM2DBL(rb_ary_entry(array, i));
@@ -23,7 +23,7 @@ static VALUE rb_index_less_equal(VALUE self, VALUE array, VALUE target)
   int i;
   int _index;
   double _target = NUM2DBL(target);
-  double* c_array = (double *)malloc(sizeof(double)*size);
+  double* c_array = (double *)malloc(sizeof(double) * size);
   for (i = 0; i < size; i++) {
     c_array[i] = NUM2DBL(rb_ary_entry(array, i));
   }
@@ -41,8 +41,8 @@ static VALUE rb_kaplan_meier(VALUE self, VALUE time, VALUE censored)
   int i;
   struct curve KM_curve;
   VALUE result;
-  double* _time = (double *)malloc(sizeof(double)*size);
-  int* _censored = (int *)malloc(sizeof(int)*size);
+  double* _time = (double *)malloc(sizeof(double) * size);
+  int* _censored = (int *)malloc(sizeof(int) * size);
   for (i = 0; i < size; i++) {
     _time[i] = NUM2DBL(rb_ary_entry(time, i));
 
@@ -53,7 +53,7 @@ static VALUE rb_kaplan_meier(VALUE self, VALUE time, VALUE censored)
   VALUE KM_x = rb_ary_new2(KM_curve.size);
   VALUE KM_y = rb_ary_new2(KM_curve.size);
 
-  for(i = 0; i< KM_curve.size; i++)
+  for (i = 0; i < KM_curve.size; i++)
   {
     rb_ary_store(KM_x, i, DBL2NUM(KM_curve.point_array[i].x));
     rb_ary_store(KM_y, i, DBL2NUM(KM_curve.point_array[i].y));
@@ -76,10 +76,10 @@ static VALUE rb_log_rank_test(VALUE self, VALUE _time_1, VALUE _cens_1, VALUE _t
   int i;
   double _Z;
 
-  double* time_1 = (double *)malloc(sizeof(double)*size_1);
-  double* time_2 = (double *)malloc(sizeof(double)*size_2);
-  int* cens_1 = (double *)malloc(sizeof(double)*size_1);
-  int* cens_2 = (double *)malloc(sizeof(double)*size_2);
+  double* time_1 = (double *)malloc(sizeof(double) * size_1);
+  double* time_2 = (double *)malloc(sizeof(double) * size_2);
+  int* cens_1 = (int *)malloc(sizeof(int) * size_1);
+  int* cens_2 = (int *)malloc(sizeof(int) * size_2);
 
   for (i = 0; i < size_1; i++) {
     time_1[i] = NUM2DBL(rb_ary_entry(_time_1, i));
@@ -90,7 +90,7 @@ static VALUE rb_log_rank_test(VALUE self, VALUE _time_1, VALUE _cens_1, VALUE _t
     time_2[i] = NUM2DBL(rb_ary_entry(_time_2, i));
     cens_2[i] = NUM2INT(rb_ary_entry(_cens_2, i));
   }
-  _Z = log_rank_test(time_1, cens_1, time_2,cens_2, size_1, size_2);
+  _Z = log_rank_test(time_1, cens_1, time_2, cens_2, size_1, size_2);
 
   free(time_1);
   free(time_2);

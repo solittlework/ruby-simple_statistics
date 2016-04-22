@@ -85,7 +85,7 @@ describe SimpleStatistics do
     cens_2 = array_to_censored(cens_2)
 
     res = sstat_instance.log_rank_test(time_1, cens_1,time_2,cens_2)
-    puts res
+    expect(res.round(3)).to be -3.860
   end
 
 end

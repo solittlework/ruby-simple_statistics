@@ -33,7 +33,7 @@ describe SimpleStatistics do
   end
 
   it 'check percentile function' do
-  	sstat_instance = SStat::Basic.new
+  	sstat_instance = SStat::Surv.new
   	testing_file = Dir.pwd + '/spec/testing_data/testing_dataset_1.csv'
   	array = read_csv_by_column(testing_file, 'Median')
   	array = array_to_double(array)
@@ -47,7 +47,7 @@ describe SimpleStatistics do
   end
 
   it 'check index_less_equal function' do
-  	sstat_instance = SStat::Basic.new
+  	sstat_instance = SStat::Surv.new
   	testing_file = Dir.pwd + '/spec/testing_data/testing_dataset_1.csv'
   	array = read_csv_by_column(testing_file, 'Median')
   	array = array_to_double(array)
@@ -59,7 +59,7 @@ describe SimpleStatistics do
   end
 
   it 'check kaplan meier function' do
-    sstat_instance = SStat::Basic.new
+    sstat_instance = SStat::Surv.new
     testing_file = Dir.pwd + '/spec/testing_data/testing_dataset_1.csv'
     time = read_csv_by_column(testing_file, 'E_T')
     cens = read_csv_by_column(testing_file, 'Cens')
@@ -78,7 +78,7 @@ describe SimpleStatistics do
   end
 
   it 'check z log rank function' do
-    sstat_instance = SStat::Basic.new
+    sstat_instance = SStat::Surv.new
     testing_file = Dir.pwd + '/spec/testing_data/testing_log_rank.csv'
     time_1 = read_csv_by_column(testing_file, 'E_T_2')
     cens_1 = read_csv_by_column(testing_file, 'Cens_2')
@@ -96,7 +96,7 @@ describe SimpleStatistics do
   end
 
   it 'check cdf for uniformly normal distribution Q function' do
-    sstat_instance = SStat::Basic.new
+    sstat_instance = SStat::Dist.new
     res = sstat_instance.cdf_unormal_Q(3.860003615)
     expect(res.round(7)).to be 0.0000567
   end

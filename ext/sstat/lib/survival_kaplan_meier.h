@@ -62,10 +62,9 @@ struct CENS_UC_NUM censored_uncensred_each_time_range(double* time, int* censore
 		{
 			if (count == 0)
 			{
-				count++;
 				unique_uncensored_time[count] = time_censored_array[i].x;
 				tmp = time_censored_array[i].x;
-
+				count++;
 			}
 
 			if (count > 0)
@@ -73,9 +72,8 @@ struct CENS_UC_NUM censored_uncensred_each_time_range(double* time, int* censore
 				if (time_censored_array[i].x != tmp)
 				{
 					unique_uncensored_time[count] = time_censored_array[i].x;
-
-					count++;
 					tmp = time_censored_array[i].x;
+					count++;
 				}
 			}
 		}
@@ -92,8 +90,10 @@ struct CENS_UC_NUM censored_uncensred_each_time_range(double* time, int* censore
 
 	for (i = 0; i < size; i++)
 	{
-		if (time_censored_array[i].x <= time_at)
+
+		if (time_censored_array[i].x <= time_at + 1e-5)
 		{
+
 			if (time_censored_array[i].y > 0)
 				censored_num_at++;
 			else
@@ -102,6 +102,7 @@ struct CENS_UC_NUM censored_uncensred_each_time_range(double* time, int* censore
 			//if the last sample is censored, follow block stores counting for last time unique uncensored period
 			if (i == size - 1)
 			{
+				count_at++;
 				uncensored_num[count_at] = uncensored_num_at;
 				censored_num[count_at] = censored_num_at;
 			}
@@ -122,6 +123,13 @@ struct CENS_UC_NUM censored_uncensred_each_time_range(double* time, int* censore
 				censored_num_at++;
 			else
 				uncensored_num_at++;
+
+			//if the last sample is censored, follow block stores counting for last time unique uncensored period
+			if (i == size - 1)
+			{
+				uncensored_num[count_at] = uncensored_num_at;
+				censored_num[count_at] = censored_num_at;
+			}
 		}
 	}
 
@@ -148,10 +156,10 @@ int kaplan_meier(double* time, int* censored, int size, curve* KM_curve)
 	int i, N;
 
 	CENS_UC_NUM cens_ucens_number = censored_uncensred_each_time_range(time, censored, size);
+	
+	N = size; //total sample number
 
-	N = size;
-
-	struct point* KM = (struct point*) malloc(cens_ucens_number.size * sizeof(struct point));
+	struct point* KM =  alloc_points(size);
 
 	for (i = 0; i < cens_ucens_number.size; i++)
 	{

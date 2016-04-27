@@ -68,6 +68,13 @@ describe SimpleStatistics do
     res = sstat_instance.kaplan_meier(time, cens)
     expect(res["time"].last.round(3)).to be 18.612
     expect(res["prob"].first.round(3)).to be 0.995
+
+    time_2 = [5, 6, 8, 3, 22]
+    cens_2 = [0, 1, 0, 0, 0]
+    res = sstat_instance.kaplan_meier(time_2, cens_2)
+    expect(res["time"].last.round(3)).to be 22.000
+    expect(res["prob"][0].round(3)).to be 0.8
+    expect(res["prob"][1].round(3)).to be 0.6
   end
 
   it 'check z log rank function' do

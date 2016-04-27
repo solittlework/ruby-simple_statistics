@@ -32,4 +32,9 @@ typedef struct array{
 	int size;
 } array;
 
+point* alloc_points(size_t size)
+{
+	return (struct point*) malloc(size * sizeof(struct point));
+}
+
 #endif

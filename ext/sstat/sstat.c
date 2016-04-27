@@ -57,6 +57,7 @@ static VALUE rb_kaplan_meier(VALUE self, VALUE time, VALUE censored)
   int size = RARRAY_LEN(time);
   int i;
   struct curve KM_curve;
+  int proc_status;
   VALUE result;
   double* _time = (double *)malloc(sizeof(double) * size);
   int* _censored = (int *)malloc(sizeof(int) * size);
@@ -65,24 +66,31 @@ static VALUE rb_kaplan_meier(VALUE self, VALUE time, VALUE censored)
 
     _censored[i] = NUM2INT(rb_ary_entry(censored, i));
   }
-  KM_curve = kaplan_meier(_time, _censored, size);
 
-  VALUE KM_x = rb_ary_new2(KM_curve.size);
-  VALUE KM_y = rb_ary_new2(KM_curve.size);
-
-  for (i = 0; i < KM_curve.size; i++)
+  proc_status = kaplan_meier(_time, _censored, size, &KM_curve);
+  if (proc_status == 0 )
   {
-    rb_ary_store(KM_x, i, DBL2NUM(KM_curve.point_array[i].x));
-    rb_ary_store(KM_y, i, DBL2NUM(KM_curve.point_array[i].y));
-  }
-  result = rb_hash_new();
-  rb_hash_aset(result, rb_str_new2("time"), KM_x);
-  rb_hash_aset(result, rb_str_new2("prob"), KM_y);
+    VALUE KM_x = rb_ary_new2(KM_curve.size);
+    VALUE KM_y = rb_ary_new2(KM_curve.size);
 
-  free(_time);
-  free(_censored);
-  free(KM_curve.point_array);
-  return result;
+    for (i = 0; i < KM_curve.size; i++)
+    {
+      rb_ary_store(KM_x, i, DBL2NUM(KM_curve.point_array[i].x));
+      rb_ary_store(KM_y, i, DBL2NUM(KM_curve.point_array[i].y));
+    }
+
+    result = rb_hash_new();
+
+    rb_hash_aset(result, rb_str_new2("time"), KM_x);
+    rb_hash_aset(result, rb_str_new2("prob"), KM_y);
+
+    free(_time);
+    free(_censored);
+    free(KM_curve.point_array);
+    return result;
+  } else {
+    return Qfalse;
+  }
 }
 
 static VALUE rb_log_rank_test(VALUE self, VALUE _time_1, VALUE _cens_1, VALUE _time_2, VALUE _cens_2)

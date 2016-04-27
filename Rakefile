@@ -43,3 +43,5 @@ Rake::ExtensionTask.new('sstat',spec)
 CLEAN.include('ext/**/*{.o,.log,.so,.bundle}')
 CLEAN.include('ext/**/Makefile')
 CLOBBER.include('lib/*{.so,.bundle}')
+
+task :go => [ :clean, :build_ext, :test ]

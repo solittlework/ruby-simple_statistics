@@ -56,14 +56,14 @@ double log_rank_test(double* time_1, int* censored_1, double* time_2, int* censo
 	array merged_uniq_time_pnts = create_sorted_unique_array(merged_time_pnts.D_ptr, merged_time_pnts.size);
 
 	//The lengths of Group_N_1 and Group_N_2 are not expected to be same. Step 1. create unique time array which inlcude time points for both
-	Group_N Group_N_1 = group_N_given_range(time_1, censored_1, size_1, merged_uniq_time_pnts.D_ptr, merged_uniq_time_pnts.size);
-	Group_N Group_N_2 = group_N_given_range(time_2, censored_2, size_2, merged_uniq_time_pnts.D_ptr, merged_uniq_time_pnts.size);
+	CENS_UC_NUM Group_N_1 = group_N_given_range(time_1, censored_1, size_1, merged_uniq_time_pnts.D_ptr, merged_uniq_time_pnts.size);
+	CENS_UC_NUM Group_N_2 = group_N_given_range(time_2, censored_2, size_2, merged_uniq_time_pnts.D_ptr, merged_uniq_time_pnts.size);
 
 	double Z = 0;
 	double V_i_sum = 0;
 
-	Group_N combined_Group_N_1;
-	Group_N combined_Group_N_2;
+	CENS_UC_NUM combined_Group_N_1;
+	CENS_UC_NUM combined_Group_N_2;
 
 	combined_Group_N_1.uncensored = (int*) malloc(merged_uniq_time_pnts.size * sizeof(int));
 	combined_Group_N_1.censored = (int*) malloc(merged_uniq_time_pnts.size * sizeof(int));
@@ -158,41 +158,6 @@ double log_rank_test(double* time_1, int* censored_1, double* time_2, int* censo
 	free(V_i);
 
 	return Z;
-}
-
-struct curve kaplan_meier(double* time, int* censored, int size)
-{
-
-	int i, N;
-
-	Group_N at_risk = group_N_self_range(time, censored, size);
-
-	N = size;
-
-	struct point* KM = (struct point*) malloc(at_risk.size * sizeof(struct point));
-
-	for (i = 0; i < at_risk.size; i++)
-	{
-		if (i > 0)
-		{
-			N = (N - at_risk.uncensored[i - 1] - at_risk.censored[i - 1]);
-			KM[i].x = at_risk.time[i];
-			KM[i].y = 1.0 * (N - at_risk.uncensored[i] - at_risk.censored[i]) / (N - at_risk.censored[i]) * KM[i - 1].y;
-		} else {
-			KM[0].x = at_risk.time[i];
-			KM[0].y = 1.0 * (N - at_risk.uncensored[0] - at_risk.censored[0]) / (N - at_risk.censored[0]);
-		}
-	}
-
-	curve KM_curve;
-	KM_curve.point_array = KM;
-	KM_curve.size = at_risk.size;
-
-	free(at_risk.uncensored);
-	free(at_risk.censored);
-	free(at_risk.time);
-
-	return KM_curve;
 }
 
 #endif

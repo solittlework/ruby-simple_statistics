@@ -6,6 +6,7 @@
 #include "lib/survival.h"
 #include "lib/global_utility.h"
 #include "lib/distribution.h"
+#include "lib/histogram/histogram.h"
 
 static VALUE rb_percentile(VALUE self, VALUE arg, VALUE target);
 static VALUE rb_percentile_index(VALUE self, VALUE arg, VALUE target);
@@ -25,7 +26,6 @@ void Init_sstat() {
 	rb_define_method(surv_class, "kaplan_meier", rb_kaplan_meier, 2);
 	rb_define_method(surv_class, "log_rank_test", rb_log_rank_test, 4);
 	rb_define_method(dist_class, "cdf_unormal_Q", rb_cdf_unormal_Q, 1);
-
 }
 
 #endif

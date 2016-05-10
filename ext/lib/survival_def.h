@@ -3,7 +3,6 @@
 
 #include "type_def.h"
 //define survival stat data
-
 typedef struct Group_N
 {
 	int * uncensored;

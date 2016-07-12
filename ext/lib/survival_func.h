@@ -152,6 +152,20 @@ double log_rank_test(double* time_1, int* censored_1, double* time_2, int* censo
 	return Z;
 }
 
+/*
+* This function does not provide a normal kaplan meier curve. A extension based on the last 3 points is applied during the calculation of KM curve
+*/
+int kaplan_meier_3p_extrapolation(double* time, int* censored, int size)
+{
+
+	Group_N at_risk = group_N_self_range(time, censored, size);
+	printf("XXXXXXXXXXXXXXXXXXX  \n");
+	puts_Group_N(&at_risk);
+	free_Group_N(at_risk);
+
+	return 0;
+}
+
 struct curve kaplan_meier(double* time, int* censored, int size)
 {
 

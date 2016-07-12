@@ -11,12 +11,12 @@ ECHO = $(ECHO1:0=@echo)
 #### Start of system configuration section. ####
 
 srcdir = .
-topdir = /home/paul/.rvm/rubies/ruby-2.1.1/include/ruby-2.1.0
+topdir = /home/chizhang/.rvm/rubies/ruby-2.1.1/include/ruby-2.1.0
 hdrdir = $(topdir)
-arch_hdrdir = /home/paul/.rvm/rubies/ruby-2.1.1/include/ruby-2.1.0/x86_64-linux
+arch_hdrdir = /home/chizhang/.rvm/rubies/ruby-2.1.1/include/ruby-2.1.0/x86_64-linux
 PATH_SEPARATOR = :
 VPATH = $(srcdir):$(arch_hdrdir)/ruby:$(hdrdir)/ruby
-prefix = $(DESTDIR)/home/paul/.rvm/rubies/ruby-2.1.1
+prefix = $(DESTDIR)/home/chizhang/.rvm/rubies/ruby-2.1.1
 rubysitearchprefix = $(rubylibprefix)/$(sitearch)
 rubyarchprefix = $(rubylibprefix)/$(arch)
 rubylibprefix = $(libdir)/$(RUBY_BASE_NAME)

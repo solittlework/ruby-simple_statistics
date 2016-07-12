@@ -11,7 +11,7 @@ struct array create_sorted_unique_array(double* array, int size)
 {
 	struct array arr;
 	int i;
-	//To speed up, choose to do not memset arr.
+	/* For performance, we have not used memset here. This might be risky */
 	arr.D_ptr = NULL;
 	int count;
 
@@ -192,7 +192,7 @@ struct Group_N group_N_self_range(double* time, int* censored, int size)
 			uncensored_num_at = 0;
 			censored_num_at = 0;
 			time_at = unique_uncensored_time[count_at];
-			//we need to update here
+			
 			if (time_censored_array[i].y > 0)
 				censored_num_at++;
 			else

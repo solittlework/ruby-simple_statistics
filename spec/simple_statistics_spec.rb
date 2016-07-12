@@ -46,6 +46,30 @@ describe SimpleStatistics do
     expect(sstat_instance.percentile(s, 1)).to be 18.023
   end
 
+  it 'check cdf for uniformly normal distribution Q function' do
+    sstat_instance = SStat::Dist.new
+    res = sstat_instance.cdf_unormal_Q(3.860003615)
+    expect(res.round(7)).to be 0.0000567
+  end
+
+  it 'check z log rank function' do
+    sstat_instance = SStat::Surv.new
+    testing_file = Dir.pwd + '/spec/testing_data/testing_log_rank.csv'
+    time_1 = read_csv_by_column(testing_file, 'E_T_2')
+    cens_1 = read_csv_by_column(testing_file, 'Cens_2')
+    time_2 = read_csv_by_column(testing_file, 'E_T_1')
+    cens_2 = read_csv_by_column(testing_file, 'Cens_1')
+
+    time_1 = array_to_double(time_1)
+    cens_1 = array_to_censored(cens_1)
+
+    time_2 = array_to_double(time_2)
+    cens_2 = array_to_censored(cens_2)
+
+    res = sstat_instance.log_rank_test(time_1, cens_1,time_2,cens_2)
+    expect(res.round(3)).to be -3.860
+  end
+
   it 'check index_less_equal function' do
   	sstat_instance = SStat::Surv.new
   	testing_file = Dir.pwd + '/spec/testing_data/testing_dataset_1.csv'
@@ -77,28 +101,15 @@ describe SimpleStatistics do
     expect(res["prob"][1].round(3)).to be 0.6
   end
 
-  it 'check z log rank function' do
+  it 'check kaplan meier function 3p extrapolation' do
     sstat_instance = SStat::Surv.new
-    testing_file = Dir.pwd + '/spec/testing_data/testing_log_rank.csv'
-    time_1 = read_csv_by_column(testing_file, 'E_T_2')
-    cens_1 = read_csv_by_column(testing_file, 'Cens_2')
-    time_2 = read_csv_by_column(testing_file, 'E_T_1')
-    cens_2 = read_csv_by_column(testing_file, 'Cens_1')
-
-    time_1 = array_to_double(time_1)
-    cens_1 = array_to_censored(cens_1)
-
-    time_2 = array_to_double(time_2)
-    cens_2 = array_to_censored(cens_2)
-
-    res = sstat_instance.log_rank_test(time_1, cens_1,time_2,cens_2)
-    expect(res.round(3)).to be -3.860
+    testing_file = Dir.pwd + '/spec/testing_data/testing_dataset_1.csv'
+    time = read_csv_by_column(testing_file, 'E_T')
+    cens = read_csv_by_column(testing_file, 'Cens')
+    time = array_to_double(time)
+    cens = array_to_censored(cens)
+    res = sstat_instance.kaplan_meier_3p_extraploation(time, cens)
+    expect(res["time"].last.round(3)).to be 18.765
+    expect(res["prob"].last.round(3)).to be 18.765
   end
-
-  it 'check cdf for uniformly normal distribution Q function' do
-    sstat_instance = SStat::Dist.new
-    res = sstat_instance.cdf_unormal_Q(3.860003615)
-    expect(res.round(7)).to be 0.0000567
-  end
-
 end

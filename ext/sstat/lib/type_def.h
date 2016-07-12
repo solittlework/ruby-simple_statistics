@@ -37,4 +37,14 @@ point* alloc_points(size_t size)
 	return (struct point*) malloc(size * sizeof(struct point));
 }
 
+void print_curve(struct curve* curve)
+{
+	int i;
+	for(i = 0; i < curve->size; i++)
+	{
+		printf("x: %f  y: %f\n", curve->point_array[i].x, curve->point_array[i].y);
+	}
+
+}
+
 #endif

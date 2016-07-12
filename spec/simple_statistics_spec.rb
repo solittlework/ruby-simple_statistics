@@ -110,6 +110,6 @@ describe SimpleStatistics do
     cens = array_to_censored(cens)
     res = sstat_instance.kaplan_meier_3p_extraploation(time, cens)
     expect(res["time"].last.round(3)).to be 18.765
-    expect(res["prob"].last.round(3)).to be 18.765
+    expect(res["prob"].last.round(3)).to be 0.000
   end
 end

@@ -1,6 +1,8 @@
 #ifndef _SURVIVAL_STAT_DEF_H_
 #define _SURVIVAL_STAT_DEF_H_
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
 #include "type_def.h"
 
 /* Debug macro from http://c.learncodethehardway.org/book/ex20.html */
@@ -35,7 +37,7 @@
 
 enum ERRORS {
 	OUTOF_MEMORY_ERROR = 1,
-	NOT_EMPTY_ERROR = 2
+	NOT_EMPTY_ERROR = 2,
 };
 
 /**
@@ -49,28 +51,26 @@ typedef struct CENS_UC_NUM
 	int size;
 } CENS_UC_NUM;
 
-void free_CENS_UC_NUM(struct CENS_UC_NUM* instance)
+void free_CENS_UC_NUM(struct CENS_UC_NUM** instance)
 {
-	if (instance != NULL)
+	if ( (*instance) != NULL)
 	{
-		if(instance->uncensored != NULL)
-			free(instance->uncensored);
+		if((*instance)->uncensored != NULL)
+			free((*instance)->uncensored);
 
-		if(instance->censored != NULL)
-			free(instance->censored);
+		if((*instance)->censored != NULL)
+			free((*instance)->censored);
 
-		if(instance->time != NULL)
-			free(instance->time);
+		if((*instance)->time != NULL)
+			free((*instance)->time);
 
-		free(instance);
+		free((*instance));
 	}
 }
-
 
 void print_CENS_UC_NUM(struct CENS_UC_NUM *cens_uncens_instance)
 {
 	int i;
-	puts("Start to print out Group N: ");
 	for( i = 0; i < cens_uncens_instance->size; i++ )
 	{
 		printf("Time : %f -- Uncensored : %i -- Censored : %i \n", 
@@ -103,7 +103,7 @@ error_1:
 	if((*cens_uncens_instance) == NULL)
 		return OUTOF_MEMORY_ERROR;
 	else
-		free_CENS_UC_NUM((*cens_uncens_instance));
+		free_CENS_UC_NUM(cens_uncens_instance);
 		free((*cens_uncens_instance));
 }
 

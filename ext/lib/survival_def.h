@@ -2,6 +2,8 @@
 #define _SURVIVAL_STAT_DEF_H_
 
 #include "type_def.h"
+#include <stdio>
+#include <stdlib>
 
 /* Define survival stat data structure */
 typedef struct Group_N

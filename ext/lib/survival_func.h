@@ -159,7 +159,6 @@ int kaplan_meier_3p_extrapolation(double* time, int* censored, int size)
 {
 
 	Group_N at_risk = group_N_self_range(time, censored, size);
-	printf("XXXXXXXXXXXXXXXXXXX  \n");
 	puts_Group_N(&at_risk);
 	free_Group_N(at_risk);
 

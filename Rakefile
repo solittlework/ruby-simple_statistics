@@ -27,7 +27,7 @@ end
 
 spec = Gem::Specification.new do |s|
   s.name = "sstat"
-  s.version = '0.0.5'
+  s.version = '0.0.6'
   s.files = Dir['bin/**/*', 'ext/**/*', 'lib/**/*']
   s.platform = Gem::Platform::RUBY
   s.extensions = FileList["ext/**/extconf.rb"]

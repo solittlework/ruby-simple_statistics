@@ -127,7 +127,7 @@ static VALUE rb_kaplan_meier_3p_extraploation(VALUE self, VALUE time, VALUE cens
 
     free(_time);
     free(_censored);
-    free(KM_curve.point_array);
+    //free(KM_curve.point_array);
     return result;
   } else {
     return Qfalse;

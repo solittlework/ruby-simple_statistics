@@ -16,6 +16,7 @@
 #define GAUSS_XLOWER (-37)
 #define GAUSS_SCALE (16.0)
 #define GAUSS_EPSILON 1e-12
+#include <stdio.h>
 
 typedef struct point{
 	double x;
@@ -32,7 +33,8 @@ typedef struct array{
 	int size;
 } array;
 
-point* alloc_points(size_t size)
+
+point* alloc_points(int size)
 {
 	return (struct point*) malloc(size * sizeof(struct point));
 }

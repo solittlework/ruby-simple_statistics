@@ -1,8 +1,11 @@
 #ifndef _SURVIVAL_STAT_UTILITY_H_
 #define _SURVIVAL_STAT_UTILITy_H_
 
-#include <stdio.h>
-#include <stdlib.h>
+#ifdef DEBUG
+	#include <stdio.h>
+	#include <stdlib.h>
+#endif
+
 #include "global_utility.h"
 #include "survival_def.h"
 #include "type_def.h"

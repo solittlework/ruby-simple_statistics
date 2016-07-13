@@ -31,8 +31,9 @@ int censored_uncensred_each_time_range(double* time, int* censored, int size,  s
 	}
 
 	qsort(time_censored_array, size, sizeof(struct point), &point_compare_x);
+	//print_points(time_censored_array, size);
 
-	//count number of unique uncensored time point
+	/* count number of unique uncensored time point */
 	int count = 0;
 	for (i = 0; i < size; i++)
 	{	//uncensored
@@ -149,6 +150,27 @@ error:
 	return OUTOF_MEMORY_ERROR;
 }
 
+void calculate_kaplan_meier(int size, const struct CENS_UC_NUM* cens_ucens_number, struct point** KM)
+{
+	int i;
+	int N = size; //total sample number
+
+	for (i = 0; i < cens_ucens_number->size; i++)
+	{
+		if (i > 0)
+		{
+			N = (N - cens_ucens_number->uncensored[i - 1] 
+				- cens_ucens_number->censored[i - 1]);
+
+			(*KM)[i].x = cens_ucens_number->time[i];
+			(*KM)[i].y = 1.0 * (N - cens_ucens_number->uncensored[i] - cens_ucens_number->censored[i]) / (N - cens_ucens_number->censored[i]) * (*KM)[i - 1].y;
+		} else {
+			(*KM)[0].x = cens_ucens_number->time[i];
+			(*KM)[0].y = 1.0 * (N - cens_ucens_number->uncensored[0] - cens_ucens_number->censored[0]) / (N - cens_ucens_number->censored[0]);
+		}
+	}
+}
+
 /**
  * @brief calculate the kaplan meier
  * @param time Event time array
@@ -164,28 +186,10 @@ int kaplan_meier(double* time, int* censored, int size, curve* KM_curve)
 
 	censored_uncensred_each_time_range(time, censored, size, &cens_ucens_number);
 	
-	N = size; //total sample number
-
 	struct point* KM =  alloc_points(size);
-
-	for (i = 0; i < cens_ucens_number->size; i++)
-	{
-		if (i > 0)
-		{
-			N = (N - cens_ucens_number->uncensored[i - 1] 
-				- cens_ucens_number->censored[i - 1]);
-
-			KM[i].x = cens_ucens_number->time[i];
-			KM[i].y = 1.0 * (N - cens_ucens_number->uncensored[i] - cens_ucens_number->censored[i]) / (N - cens_ucens_number->censored[i]) * KM[i - 1].y;
-		} else {
-			KM[0].x = cens_ucens_number->time[i];
-			KM[0].y = 1.0 * (N - cens_ucens_number->uncensored[0] - cens_ucens_number->censored[0]) / (N - cens_ucens_number->censored[0]);
-		}
-	}
-
+	calculate_kaplan_meier(size, cens_ucens_number, &KM);
 	KM_curve->point_array = KM;
 	KM_curve->size = cens_ucens_number->size;
-	//free_CENS_UC_NUM(&cens_ucens_number);
 	return 0;
 }
 
@@ -277,37 +281,30 @@ error:
 int kaplan_meier_3p_extrapolation(double* time, int* censored, int size, struct curve* KM_curve)
 {
 	int proc_state = 0;
-	int i;
 	struct CENS_UC_NUM* cens_ucens_number;
 	censored_uncensred_each_time_range(time, censored, size, &cens_ucens_number);
-	struct CENS_UC_NUM* updated_cens_ucens_number;
-
-	proc_state = KM_3p_extrapolation(&cens_ucens_number, &updated_cens_ucens_number, size);
-	int N = size;
-
 	struct point* KM =  alloc_points(size);
 
-	for (i = 0; i < updated_cens_ucens_number->size; i++)
+	/* If the length of the inital KM curve is less than or equal to 7, we will not apply extrapolation */
+	if(cens_ucens_number->size > 6)
 	{
-		if (i > 0)
-		{
-			N = (N - updated_cens_ucens_number->uncensored[i - 1] 
-				- updated_cens_ucens_number->censored[i - 1]);
-
-			KM[i].x = updated_cens_ucens_number->time[i];
-			KM[i].y = 1.0 * (N - updated_cens_ucens_number->uncensored[i] - updated_cens_ucens_number->censored[i]) / (N - updated_cens_ucens_number->censored[i]) * KM[i - 1].y;
-		} else {
-			KM[0].x = updated_cens_ucens_number->time[i];
-			KM[0].y = 1.0 * (N - updated_cens_ucens_number->uncensored[0] - updated_cens_ucens_number->censored[0]) / (N - updated_cens_ucens_number->censored[0]);
-		}
+		struct CENS_UC_NUM* updated_cens_ucens_number;
+		proc_state = KM_3p_extrapolation(&cens_ucens_number, &updated_cens_ucens_number, size);
+		calculate_kaplan_meier(size, updated_cens_ucens_number, &KM);
+		KM_curve->point_array = KM;
+		KM_curve->size = updated_cens_ucens_number->size;
+		KM_curve->point_array = KM;
+		free_CENS_UC_NUM(&updated_cens_ucens_number);
+	} else {
+		calculate_kaplan_meier(size, cens_ucens_number, &KM);
+		KM_curve->point_array = KM;
+		KM_curve->size = cens_ucens_number->size;
+		KM_curve->point_array = KM;
 	}
-
-	KM_curve->point_array = KM;
-	KM_curve->size = updated_cens_ucens_number->size;
 
 	free_CENS_UC_NUM(&cens_ucens_number);
 
-	free_CENS_UC_NUM(&updated_cens_ucens_number);
 	return 0;
 }
+
 #endif

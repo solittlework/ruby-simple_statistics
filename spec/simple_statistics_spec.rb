@@ -103,7 +103,6 @@ describe SimpleStatistics do
 
   it 'check kaplan meier function 3p extrapolation' do
     sstat_instance = SStat::Surv.new
-
     testing_file = Dir.pwd + '/spec/testing_data/testing_dataset_1.csv'
     time = read_csv_by_column(testing_file, 'E_T')
     cens = read_csv_by_column(testing_file, 'Cens')
@@ -119,6 +118,7 @@ describe SimpleStatistics do
     time_2 = array_to_double(time_2)
     cens_2 = array_to_censored(cens_2)
     res_2 = sstat_instance.kaplan_meier_3p_extraploation(time_2, cens_2)
+    puts res_2
     expect(res_2["prob"].last.round(3)).to be 0.000
   end
 end

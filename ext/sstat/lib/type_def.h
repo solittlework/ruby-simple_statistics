@@ -33,6 +33,15 @@ typedef struct array{
 	int size;
 } array;
 
+void print_points(struct point* points, int size)
+{
+	int i;
+	for(i = 0; i < size; i++)
+	{
+		printf("point %i, x : %f, y : %f \n", i, points[i].x, points[i].y);
+	}
+}
+
 
 point* alloc_points(int size)
 {

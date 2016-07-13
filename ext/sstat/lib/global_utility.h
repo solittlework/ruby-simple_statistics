@@ -11,7 +11,11 @@ int compare_double (const void * a, const void * b)
 
 int point_compare_x (const void * a, const void * b)
 {
-	return ((struct point*)a)->x - ((struct point*)b)->x;
+	double diff = (double)(((struct point*)a)->x) - (double)(((struct point*)b)->x);
+	if(diff > 0)
+		return 1;
+	else
+		return 0;
 }
 
 #endif

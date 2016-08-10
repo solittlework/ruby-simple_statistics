@@ -20,7 +20,17 @@ Or install it yourself as:
 
 ## Usage
 
-
+```ruby
+require 'sstat'
+``````
+### Calculate the Histogram Mean
+```ruby
+#init simple statistics histogram
+sstat_instance = SStat::Hist.new
+bin = [2, 3, 5, 2, 1]
+range = [0, 1, 2, 3, 4, 5]
+hist_mean = sstat_instance.hist_mean(bin, range)
+``````
 
 ## Development
 

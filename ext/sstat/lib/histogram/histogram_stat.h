@@ -3,36 +3,39 @@
 #include "histogram_type.h"
 
 /*
-*
+* Mean of a histogram
+* Compute the bin-weighted arithmetic mean M of a histogram using the recurrence relation
+* M(n) = M(n-1) + (x[n] - M(n-1)) (w(n)/(W(n-1) + w(n))) 
+* W(n) = W(n-1) + w(n)
 */
-int histogram_mean(const histogram* h, f_T* res)
+int histogram_mean(const struct histogram* h, double* hmean)
 {
-	int i, n;
-	f_T xi, wi;
-	f_T hmean = 0;
-	f_T W = 0;
-	n = h->n;
+    int i, n;
+    double xi, wi;
+    (*hmean) = 0;
+    double W = 0;
+    n = h->n;
 
-	for(i = 0; i < n; i++)
-	{
-		//make sure size of h->range is n + 1
-		xi = (h->range[i+1] + h->range[i]) / 2;
-		wi = h->bin[i];
-		if(wi > 0)
-		{
-			W += wi;
-			hmean += (hmean - xi) * wi / W;
-		}
-	}
+    for(i = 0; i < n; i++)
+    {
+        //make sure size of h->range is n + 1
 
-	(*res) = hmean;
-	return 0;
+        xi = (h->range[i+1] + h->range[i]) / 2;
+        wi = h->bin[i];
+        if(wi > 0)
+        {
+            W += wi;
+            (*hmean) += (xi - (*hmean)) * wi / W;
+        }
+    }
+
+    return 0;
 }
 
-int histogram_bin_sum(const histogram* h, f_T* res)
+int histogram_bin_sum(const struct histogram* h, double* res)
 {
 	size_t i, n;
-	f_T sum = 0;
+	double sum = 0;
 	n = h->n;
 	for(i = 0; i < n; i++)
 	{
@@ -43,10 +46,10 @@ int histogram_bin_sum(const histogram* h, f_T* res)
 	return 0;
 }
 
-int histogram_median(const histogram* h, f_T* res)
+int histogram_median(const struct histogram* h, double* res)
 {
 	size_t i, n;
-	f_T sum, sum_50;
+	double sum, sum_50;
 	int proc_flag = histogram_bin_sum(h, &sum);
 
 	n = h->n;

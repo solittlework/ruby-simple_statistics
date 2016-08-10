@@ -82,6 +82,13 @@ describe SimpleStatistics do
     expect(sstat_instance.index_less_equal(s, 18.023)).to be 4395
   end
 
+  it 'check histogram_mean function' do
+    sstat_instance = SStat::Hist.new
+    bin = [2, 3, 5, 2, 1]
+    range = [0, 1, 2, 3, 4, 5]
+    expect(sstat_instance.hist_mean(bin, range).round(3)).to be 2.269
+  end
+
   it 'check kaplan meier function' do
     sstat_instance = SStat::Surv.new
     testing_file = Dir.pwd + '/spec/testing_data/testing_dataset_1.csv'
@@ -118,7 +125,6 @@ describe SimpleStatistics do
     time_2 = array_to_double(time_2)
     cens_2 = array_to_censored(cens_2)
     res_2 = sstat_instance.kaplan_meier_3p_extraploation(time_2, cens_2)
-    puts res_2
     expect(res_2["prob"].last.round(3)).to be 0.000
   end
 end

@@ -16,7 +16,7 @@ result = exp (-0.5 * xsq * xsq) * exp (-1.0 * del) * rational;
  
 return result;
 }
- 
+
 /*
  * Normal cdf for fabs(x) < 0.66291
  */

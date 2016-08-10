@@ -52,6 +52,34 @@ static VALUE rb_index_less_equal(VALUE self, VALUE array, VALUE target)
   return INT2NUM(_index);
 }
 
+static VALUE rb_hist_mean(VALUE self, VALUE bin, VALUE range)
+{
+  int bin_size = RARRAY_LEN(bin);
+  int range_size = RARRAY_LEN(range);
+  int i;
+
+  if ((range_size - bin_size) != 1)
+    rb_raise(rb_eTypeError, "Size of range should be 1 larger than size of bin.");
+
+  double hmean = 0;
+  struct histogram* h = (struct histogram*)malloc(sizeof(struct histogram));
+  h->n = bin_size;
+  h->range = malloc(sizeof(double) * ( h->n + 1));
+  h->bin = malloc(sizeof(double) * (h->n));
+
+  for (i = 0; i < bin_size; i++) {
+    h->bin[i] = NUM2DBL(rb_ary_entry(bin, i));
+  }
+
+  for (i = 0; i < range_size; i++) {
+    h->range[i] = NUM2DBL(rb_ary_entry(range, i));
+  }
+
+  histogram_mean(h, &hmean);
+  free_histogram(h);
+  return DBL2NUM(hmean);
+}
+
 static VALUE rb_kaplan_meier(VALUE self, VALUE time, VALUE censored)
 {
   int size = RARRAY_LEN(time);

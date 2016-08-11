@@ -86,6 +86,8 @@ describe SimpleStatistics do
     sstat_instance = SStat::Hist.new
     bin = [2, 3, 5, 2, 1]
     range = [0, 1, 2, 3, 4, 5]
+    expect(sstat_instance.hist_median(bin, range).round(3)).to be 2.500
+
     expect(sstat_instance.hist_mean(bin, range).round(3)).to be 2.269
   end
 

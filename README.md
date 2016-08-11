@@ -23,13 +23,16 @@ Or install it yourself as:
 ```ruby
 require 'sstat'
 ``````
-### Calculate the Histogram Mean
+#### Basic Histogram Analysis
 ```ruby
 #init simple statistics histogram
 sstat_instance = SStat::Hist.new
 bin = [2, 3, 5, 2, 1]
 range = [0, 1, 2, 3, 4, 5]
 hist_mean = sstat_instance.hist_mean(bin, range)
+# => hist_mean.round(3) => 2.269
+hist_median = sstat_instance.hist_median(bin, range)
+hist_median.round(3) => 2.500
 ``````
 
 ## Development
@@ -41,4 +44,3 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-

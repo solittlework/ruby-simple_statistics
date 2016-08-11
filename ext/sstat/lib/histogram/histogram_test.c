@@ -8,6 +8,7 @@ int main(int argc, char const *argv[])
     int n = 5;
     int i = 0;
     double hmean = 0;
+    double hmedian = 0;
     struct histogram* h = (struct histogram*)malloc( sizeof(struct histogram));
 
     h->range = malloc(sizeof(double) * (n + 1));
@@ -23,8 +24,13 @@ int main(int argc, char const *argv[])
     h->bin[4] = 1;
 
     h->n = n;
+    /* Test histogram mean */
     histogram_mean(h, &hmean);
     printf("histogram mean %f \n", hmean);
+
+    histogram_median(h, &hmedian);
+    printf("histogram median %f \n", hmedian);
+
     free_histogram(h);
     return 0;
 }

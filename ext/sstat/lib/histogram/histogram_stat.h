@@ -32,45 +32,44 @@ int histogram_mean(const struct histogram* h, double* hmean)
     return 0;
 }
 
-int histogram_bin_sum(const struct histogram* h, double* res)
+int histogram_bin_sum(const struct histogram* h, double* sum)
 {
-	size_t i, n;
-	double sum = 0;
-	n = h->n;
-	for(i = 0; i < n; i++)
-	{
-		sum += h->bin[i];
-	}
+    size_t i, n;
+    (*sum) = 0;
+    n = h->n;
+    for(i = 0; i < n; i++)
+    {
+        (*sum) += h->bin[i];
+    }
 
-	(*res) = sum;
-	return 0;
+    return 0;
 }
 
-int histogram_median(const struct histogram* h, double* res)
+int histogram_median(const struct histogram* h, double* hmedian)
 {
-	size_t i, n;
-	double sum, sum_50;
-	int proc_flag = histogram_bin_sum(h, &sum);
+    size_t i, n;
+    double sum, sum_50;
+    int proc_flag = histogram_bin_sum(h, &sum);
 
-	n = h->n;
+    n = h->n;
 
-	if(proc_flag != 0)
-		return -1; //unexpected error
+    if(proc_flag != 0)
+        return -1;
 
-	sum_50 = sum / 2.0;
-	sum = 0;
-	for(i = 0; i < n; i++)
-	{
-		sum += h->bin[i];
+    sum_50 = sum / 2.0;
+    sum = 0;
+    for(i = 0; i < n; i++)
+    {
+        sum += h->bin[i];
 
-		if(sum >= sum_50)
-		{
-			(*res) = (h->range[i] + h->range[i+1]) / 2;
-			break;
-		}
-	}
+        if(sum >= sum_50)
+        {
+            (*hmedian) = (h->range[i] + h->range[i+1]) / 2;
+            break;
+        }
+    }
 
-	return 0;
+    return 0;
 }
 
 #endif

@@ -105,7 +105,6 @@ int censored_uncensred_each_time_range(double* time, int* censored, int size,  s
 			//if the last sample is censored, follow block stores counting for last time unique uncensored period
 			if (i == size - 1)
 			{
-				count_at++;
 				(*cens_ucens_number)->uncensored[count_at] = uncensored_num_at;
 				(*cens_ucens_number)->censored[count_at] = censored_num_at;
 			}
@@ -180,8 +179,6 @@ void calculate_kaplan_meier(int size, const struct CENS_UC_NUM* cens_ucens_numbe
  */
 int kaplan_meier(double* time, int* censored, int size, curve* KM_curve)
 {
-
-	int i, N;
 	struct CENS_UC_NUM* cens_ucens_number;
 
 	censored_uncensred_each_time_range(time, censored, size, &cens_ucens_number);
@@ -282,7 +279,7 @@ int kaplan_meier_3p_extrapolation(double* time, int* censored, int size, struct 
 {
 	int proc_state = 0;
 	struct CENS_UC_NUM* cens_ucens_number;
-	censored_uncensred_each_time_range(time, censored, size, &cens_ucens_number);
+	proc_state = censored_uncensred_each_time_range(time, censored, size, &cens_ucens_number);
 	struct point* KM =  alloc_points(size);
 
 	/* If the length of the inital KM curve is less than or equal to 7, we will not apply extrapolation */
@@ -304,7 +301,7 @@ int kaplan_meier_3p_extrapolation(double* time, int* censored, int size, struct 
 
 	free_CENS_UC_NUM(&cens_ucens_number);
 
-	return 0;
+	return proc_state;
 }
 
 #endif

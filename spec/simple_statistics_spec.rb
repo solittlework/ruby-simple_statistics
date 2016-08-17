@@ -128,5 +128,12 @@ describe SimpleStatistics do
     cens_2 = array_to_censored(cens_2)
     res_2 = sstat_instance.kaplan_meier_3p_extraploation(time_2, cens_2)
     expect(res_2["prob"].last.round(3)).to be 0.000
+
+    testing_file_3 = Dir.pwd + '/spec/testing_data/subset_of_G1_Tx1_OS_U18r_PostMELD.csv'
+    time_3 = read_csv_by_column(testing_file_3, 'Time')
+    cens_3 = read_csv_by_column(testing_file_3, 'Censored')
+    time_3 = array_to_double(time_3)
+    cens_3 = array_to_censored(cens_3)
+    res_3 = sstat_instance.kaplan_meier_3p_extraploation(time_3, cens_3)
   end
 end

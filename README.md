@@ -1,7 +1,6 @@
 # SimpleStatistics
 
-Simple Statistics aims to provide basic statistic functions. To speed up the gem, all of the functions here are written by C. Some of the functions are transferred from the GNU Scientific Library. This gem is still under active development. Please only use the functions demonstrated in the Usage Part. All of the functions presented are passed the memory test of Valgrind. If you have found any bugs, please report to haipeng3@ualberta.ca
-
+Simple Statistics aims to provide basic statistic functions for Ruby. To speed up, all of the functions here are written by C, and then wrapped using Ruby. Some of the functions are transferred from the GNU Scientific Library. This gem is still under active development. Therefore, please only use the functions shown in the Usage Part. If you have found any bugs or specifc requirements, please email to haipeng3@ualberta.ca
 ## Installation
 
 Add this line to your application's Gemfile:

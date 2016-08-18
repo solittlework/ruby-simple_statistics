@@ -1,0 +1,4 @@
+median_test.c: In function ‘main’:
+median_test.c:7:9: warning: unused variable ‘proc’ [-Wunused-variable]
+     int proc = median(data, 14, &m);
+         ^

@@ -55,6 +55,7 @@ describe SimpleStatistics do
   it 'check z log rank function' do
     sstat_instance = SStat::Surv.new
     testing_file = Dir.pwd + '/spec/testing_data/testing_log_rank.csv'
+    testing_file_2 = Dir.pwd + '/spec/testing_data/testing_log_rank_2.csv'
     time_1 = read_csv_by_column(testing_file, 'E_T_2')
     cens_1 = read_csv_by_column(testing_file, 'Cens_2')
     time_2 = read_csv_by_column(testing_file, 'E_T_1')
@@ -67,6 +68,20 @@ describe SimpleStatistics do
     cens_2 = array_to_censored(cens_2)
 
     res = sstat_instance.log_rank_test(time_1, cens_1,time_2,cens_2)
+
+    time_2_1 = read_csv_by_column(testing_file_2, 'event_time_1')
+    cens_2_1 = read_csv_by_column(testing_file_2, 'censored_1')
+    time_2_2 = read_csv_by_column(testing_file_2, 'event_time_2')
+    cens_2_2 = read_csv_by_column(testing_file_2, 'censored_2')
+
+    time_2_1 = array_to_double(time_2_1)
+    cens_2_1 = array_to_censored(cens_2_1)
+
+    time_2_2 = array_to_double(time_2_2)
+    cens_2_2 = array_to_censored(cens_2_2)
+
+    res_2 = sstat_instance.log_rank_test(time_2_1, cens_2_1,time_2_2,cens_2_2)
+    expect(res_2.round(3)).to be 5.810
     expect(res.round(3)).to be -3.860
   end
 

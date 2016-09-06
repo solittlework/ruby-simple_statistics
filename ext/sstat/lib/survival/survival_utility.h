@@ -1,8 +1,11 @@
 #ifndef _SURVIVAL_STAT_UTILITY_H_
 #define _SURVIVAL_STAT_UTILITy_H_
 
-#include <stdio.h>
-#include <stdlib.h>
+#ifdef DEBUG
+	#include <stdio.h>
+	#include <stdlib.h>
+#endif
+
 #include "global_utility.h"
 #include "survival_def.h"
 #include "type_def.h"
@@ -11,14 +14,13 @@ struct array create_sorted_unique_array(double* array, int size)
 {
 	struct array arr;
 	int i;
-	/* For performance, we have not used memset here. This might be risky */
+	//To speed up, choose to do not memset arr.
 	arr.D_ptr = NULL;
 	int count;
 
 	qsort(array, size, sizeof(double), &compare_double);
 
 	count = 1;
-	
 	//calcualte number of unique
 	for(i = 1; i < size; ++i)
 	{
@@ -89,128 +91,7 @@ int find_first_index_has(double* arr, int size, double value)
 	return -1;
 }
 
-struct Group_N group_N_self_range(double* time, int* censored, int size)
-{
-	int i, count_at, uncensored_num_at, censored_num_at;
-	double tmp, time_at;
-
-	// sort time and censored based on time together, time can censored array
-	struct point* time_censored_array = (struct point*) malloc(size * sizeof(struct point));
-
-	//censored, if censored[] is positive
-	for (i = 0; i < size; i++)
-	{
-		time_censored_array[i].x = time[i];
-		if (censored[i] > 0)
-			time_censored_array[i].y = 1;
-		else
-			time_censored_array[i].y = -1;
-	}
-
-	qsort(time_censored_array, size, sizeof(struct point), &point_compare_x);
-
-	//count unique uncensored time point
-	int count = 0;
-	for (i = 0; i < size; i++)
-	{	//uncensored
-		if (time_censored_array[i].y < 0)
-		{
-			if (count == 0)
-			{
-				count++;
-				tmp = time_censored_array[i].x;
-			}
-
-			if (count > 0)
-			{	//unique
-				if (time_censored_array[i].x != tmp)
-				{
-					count++;
-					tmp = time_censored_array[i].x;
-				}
-			}
-		}
-	}
-
-	double* unique_uncensored_time = (double *) malloc(count * sizeof(double));
-
-	count = 0;
-
-	for (i = 0; i < size; i++)
-	{
-		if (time_censored_array[i].y < 0)
-		{
-			if (count == 0)
-			{
-				count++;
-				unique_uncensored_time[count] = time_censored_array[i].x;
-				tmp = time_censored_array[i].x;
-
-			}
-
-			if (count > 0)
-			{
-				if (time_censored_array[i].x != tmp)
-				{
-					unique_uncensored_time[count] = time_censored_array[i].x;
-
-					count++;
-					tmp = time_censored_array[i].x;
-				}
-			}
-		}
-	}
-
-	int* uncensored_num = (int *) malloc(count * sizeof(int));
-	int* censored_num = (int *) malloc(count * sizeof(int));
-
-	//record current time point
-	time_at = unique_uncensored_time[0];
-	count_at = 0;
-	uncensored_num_at = 0;
-	censored_num_at = 0;
-
-	for (i = 0; i < size; i++)
-	{
-		if (time_censored_array[i].x <= time_at)
-		{
-			if (time_censored_array[i].y > 0)
-				censored_num_at++;
-			else
-				uncensored_num_at++;
-
-			if (i == size - 1)
-			{
-				uncensored_num[count_at] = uncensored_num_at;
-				censored_num[count_at] = censored_num_at;
-			}
-
-		} else {
-			uncensored_num[count_at] = uncensored_num_at;
-			censored_num[count_at] = censored_num_at;
-			count_at++;
-
-			uncensored_num_at = 0;
-			censored_num_at = 0;
-			time_at = unique_uncensored_time[count_at];
-			
-			if (time_censored_array[i].y > 0)
-				censored_num_at++;
-			else
-				uncensored_num_at++;
-		}
-	}
-
-	Group_N at_risk_result;
-	at_risk_result.uncensored = uncensored_num;
-	at_risk_result.censored = censored_num;
-	at_risk_result.size = count;
-	at_risk_result.time = unique_uncensored_time;
-	free(time_censored_array);
-	return at_risk_result;
-}
-
-struct Group_N group_N_given_range(double* time, int* censored, int size, double* unique_time, int unique_time_size)
+struct CENS_UC_NUM group_N_given_range(double* time, int* censored, int size, double* unique_time, int unique_time_size)
 {
 	int i, count_at, uncensored_num_at, censored_num_at;
 	double time_at;
@@ -279,7 +160,7 @@ struct Group_N group_N_given_range(double* time, int* censored, int size, double
 		}
 	}
 
-	Group_N at_risk_result;
+	CENS_UC_NUM at_risk_result;
 	at_risk_result.uncensored = uncensored_num;
 	at_risk_result.censored = censored_num;
 	at_risk_result.size = unique_time_size;

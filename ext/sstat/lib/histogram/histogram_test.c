@@ -24,6 +24,7 @@ int main(int argc, char const *argv[])
     h->bin[4] = 1;
 
     h->n = n;
+    
     /* Test histogram mean */
     histogram_mean(h, &hmean);
     printf("histogram mean %f \n", hmean);

@@ -202,7 +202,6 @@ static VALUE rb_log_rank_test(VALUE self, VALUE _time_1, VALUE _cens_1, VALUE _t
   double* time_2 = (double *)malloc(sizeof(double) * size_2);
   int* cens_1 = (int *)malloc(sizeof(int) * size_1);
   int* cens_2 = (int *)malloc(sizeof(int) * size_2);
-
   for (i = 0; i < size_1; i++) {
     time_1[i] = NUM2DBL(rb_ary_entry(_time_1, i));
     cens_1[i] = NUM2INT(rb_ary_entry(_cens_1, i));
@@ -212,6 +211,7 @@ static VALUE rb_log_rank_test(VALUE self, VALUE _time_1, VALUE _cens_1, VALUE _t
     time_2[i] = NUM2DBL(rb_ary_entry(_time_2, i));
     cens_2[i] = NUM2INT(rb_ary_entry(_cens_2, i));
   }
+
   _Z = log_rank_test(time_1, cens_1, time_2, cens_2, size_1, size_2);
 
   free(time_1);

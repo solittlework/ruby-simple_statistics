@@ -27,7 +27,7 @@ end
 
 spec = Gem::Specification.new do |s|
   s.name = "sstat"
-  s.version = '0.0.7'
+  s.version = '0.0.8'
   s.files = Dir['bin/**/*', 'ext/**/*', 'lib/**/*']
   s.platform = Gem::Platform::RUBY
   s.extensions = FileList["ext/**/extconf.rb"]
@@ -39,7 +39,9 @@ end
 # use the 'rake package' commend to package your gem
 # add your default gem packing task
 Gem::PackageTask.new(spec) do |pkg|
+    cp "ext/sstat/sstat.so", "tmp/x86_64-linux/sstat/2.1.1"
 end
+
 Rake::ExtensionTask.new('sstat',spec)
 CLEAN.include('ext/**/*{.o,.log,.so,.bundle}')
 CLEAN.include('ext/**/Makefile')

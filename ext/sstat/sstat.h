@@ -8,7 +8,6 @@
 #include "lib/survival/distribution.h"
 #include "lib/global_utility.h"
 #include "lib/histogram/histogram.h"
-#include "lib/distribution/chi_square.h"
 
 static VALUE rb_percentile(VALUE self, VALUE arg, VALUE target);
 static VALUE rb_percentile_index(VALUE self, VALUE arg, VALUE target);
@@ -49,8 +48,6 @@ void Init_sstat() {
 
     /* Functions for distribution */
     rb_define_method(dist_class, "cdf_unormal_Q", rb_cdf_unormal_Q, 1);
-    rb_define_method(dist_class, "chi_square_Q", chi_square_Q, 2);
-    rb_define_method(dist_class, "chi_square_P", chi_square_P, 2);
 
     /* Functions for histogram */
     rb_define_method(hist_class, "hist_mean", rb_hist_mean, 2);

@@ -230,10 +230,11 @@ static VALUE rb_cdf_unormal_Q(VALUE self, VALUE x)
 
 static VALUE rb_dist_chi_square_Q(VALUE self, VALUE index, VALUE degree)
 {
-    return
+    return 0;
 }
 
 static VALUE rb_dist_chi_square_P(VALUE self, VALUE index, VALUE degree)
 {
+    return 0;
 
 }

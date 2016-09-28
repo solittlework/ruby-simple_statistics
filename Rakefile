@@ -4,43 +4,40 @@ require 'rake/extensiontask'
 
 desc 'Build the sstat C extension'
 task :build_ext do
-  Dir.chdir("ext/sstat") do
+    Dir.chdir("ext/sstat") do
     #sh "swig -ruby -c++ sstat.i"
     sh "ruby extconf.rb --enable-static"
     sh "make"
-
-  end
-    cp "ext/sstat/sstat.so", "lib/"
-
+    end
 end
 
 task :install do
-  Dir.chdir("ext/sstat") do
-  	Dir.chdir("gsl-2.1/") do
-  		sh "./configure && make && sudo make install" # 
-  	end
-  end
+    Dir.chdir("ext/sstat") do
+    Dir.chdir("gsl-2.1/") do
+        sh "./configure && make && sudo make install" # 
+    end
+    end
 end
 
 desc 'sstat test'
 task :test do
-	sh "rspec spec"
+    sh "rspec spec"
 end
 
 task :clean do
-  rm "ext/sstat/sstat.so" if File.exists? "ext/sstat/sstat.so"
+    rm "ext/sstat/sstat.so" if File.exists? "ext/sstat/sstat.so"
 end
 
 spec = Gem::Specification.new do |s|
-  s.name = "sstat"
-  s.version = '0.0.10'
-  s.files = Dir['bin/**/*', 'ext/**/*', 'lib/**/*']
-  s.platform = Gem::Platform::RUBY
-  s.license = "MIT"
-  s.extensions = FileList["ext/**/extconf.rb"]
-  s.authors = ['Haipeng Li', 'Bret Hoehn', 'Russ Greiner']
-  s.email = 'haipeng3@ualberta.ca'
-  s.summary = 'This gem includes native ruby statistics functions. For speed purpose, functions here are all created from C.'
+    s.name = "sstat"
+    s.version = '0.0.10'
+    s.files = Dir['bin/**/*', 'ext/**/*', 'lib/**/*']
+    s.platform = Gem::Platform::RUBY
+    s.license = "MIT"
+    s.extensions = FileList["ext/**/extconf.rb"]
+    s.authors = ['Haipeng Li', 'Bret Hoehn', 'Russ Greiner']
+    s.email = 'haipeng3@ualberta.ca'
+    s.summary = 'This gem includes native ruby statistics functions. For speed purpose, functions here are all created from C.'
 end
 
 # use the 'rake package' commend to package your gem

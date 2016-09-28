@@ -56,6 +56,8 @@ describe SimpleStatistics do
         sstat_instance = SStat::Surv.new
         testing_file = Dir.pwd + '/spec/testing_data/testing_log_rank.csv'
         testing_file_2 = Dir.pwd + '/spec/testing_data/testing_log_rank_2.csv'
+        testing_file_3 = Dir.pwd + '/spec/testing_data/log_rank_test_3.csv'
+
         time_1 = read_csv_by_column(testing_file, 'E_T_2')
         cens_1 = read_csv_by_column(testing_file, 'Cens_2')
         time_2 = read_csv_by_column(testing_file, 'E_T_1')
@@ -80,7 +82,21 @@ describe SimpleStatistics do
         time_2_2 = array_to_double(time_2_2)
         cens_2_2 = array_to_censored(cens_2_2)
 
-        res_2 = sstat_instance.log_rank_test(time_2_1, cens_2_1,time_2_2,cens_2_2)
+        time_3_1 = read_csv_by_column(testing_file_3, 'T_1')
+        time_3_1 = array_to_double(time_3_1)
+
+        cens_3_1 = read_csv_by_column(testing_file_3, 'C_1')
+        cens_3_1 = array_to_censored(cens_3_1)
+
+        time_3_2 = read_csv_by_column(testing_file_3, 'T_2')
+        time_3_2 = array_to_double(time_3_2)
+        
+        cens_3_2 = read_csv_by_column(testing_file_3, 'C_2')
+        cens_3_2 = array_to_censored(cens_3_2) 
+
+        res_2 = sstat_instance.log_rank_test(time_2_1, cens_2_1, time_2_2,cens_2_2)
+        res_3 = sstat_instance.log_rank_test(time_3_1, cens_3_1, time_3_2,cens_3_2)
+
         expect(res_2.round(3)).to be 5.810
         expect(res.round(3)).to be -3.860
     end

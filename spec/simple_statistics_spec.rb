@@ -139,9 +139,25 @@ describe SimpleStatistics do
         expect(res["time"].last.round(3)).to be 22.000
         expect(res["prob"][0].round(3)).to be 0.8
         expect(res["prob"][1].round(3)).to be 0.6
+        puts "KM 1"
+        puts res
+
+=begin
+        testing_file_3 = Dir.pwd + '/spec/testing_data/testing_km_3.csv'
+        time_3 = read_csv_by_column(testing_file_3, 'Time')
+        cens_3 = read_csv_by_column(testing_file_3, 'Censored')
+        time_3 = array_to_double(time_3)
+        cens_3 = array_to_censored(cens_3)
+        puts "Censored "
+        puts cens_3
+        res_2 = sstat_instance.kaplan_meier(time_3, cens_3)
+        puts "KM 2"
+        puts res_2
+=end
     end
 
     it 'check kaplan meier function 3p extrapolation' do
+        puts "1st testing"
         sstat_instance = SStat::Surv.new
         testing_file = Dir.pwd + '/spec/testing_data/testing_dataset_1.csv'
         time = read_csv_by_column(testing_file, 'E_T')
@@ -152,6 +168,7 @@ describe SimpleStatistics do
         expect(res["time"].last.round(3)).to be 18.765
         expect(res["prob"].last.round(3)).to be 0.000
 
+        puts "2st testing"
         testing_file_2 = Dir.pwd + '/spec/testing_data/All_Data_updated_may2011_simple.csv'
         time_2 = read_csv_by_column(testing_file_2, 'SURVIVAL')
         cens_2 = read_csv_by_column(testing_file_2, 'CENSORED')
@@ -160,11 +177,21 @@ describe SimpleStatistics do
         res_2 = sstat_instance.kaplan_meier_3p_extraploation(time_2, cens_2)
         expect(res_2["prob"].last.round(3)).to be 0.000
 
+        puts "3rd testing"
         testing_file_3 = Dir.pwd + '/spec/testing_data/subset_of_G1_Tx1_OS_U18r_PostMELD.csv'
         time_3 = read_csv_by_column(testing_file_3, 'Time')
         cens_3 = read_csv_by_column(testing_file_3, 'Censored')
         time_3 = array_to_double(time_3)
         cens_3 = array_to_censored(cens_3)
         res_3 = sstat_instance.kaplan_meier_3p_extraploation(time_3, cens_3)
+
+        puts "4th testing"
+        testing_file_4 = Dir.pwd + '/spec/testing_data/testing_km_3.csv'
+        time_4 = read_csv_by_column(testing_file_4, 'Time')
+        cens_4 = read_csv_by_column(testing_file_4, 'Censored')
+        time_4 = array_to_double(time_4)
+        cens_4 = array_to_censored(cens_4)
+        res_4 = sstat_instance.kaplan_meier_3p_extraploation(time_4, cens_4)
+        expect(res_4["prob"].last.round(3)).to be 0.000
     end
 end

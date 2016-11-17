@@ -11,6 +11,7 @@
  * @param censored censored information: positive -> censored; zero or negative -> uncensored
  * @return CENS_UC_NUM structure
  */
+ #define EXP 1e-12
 int censored_uncensred_each_time_range(double* time, int* censored, int size,  struct CENS_UC_NUM** cens_ucens_number)
 {
 	int i, count_at, uncensored_num_at, censored_num_at;
@@ -193,18 +194,30 @@ int kaplan_meier(double* time, int* censored, int size, curve* KM_curve)
 /**
  * @brief extend the KM curve based on the last 3 points
  */
-int KM_3p_extrapolation(struct CENS_UC_NUM** cens_uc_num, struct CENS_UC_NUM** updated_cens_uc_num, int sample_size)
+int KM_3p_extrapolation(struct CENS_UC_NUM** cens_uc_num, struct CENS_UC_NUM ** updated_cens_uc_num, int sample_size)
 {
-	double mean_last_uncensored = 0;
-	double mean_last_censored = 0;
+	int mean_last_uncensored = 0;
+	int mean_last_censored = 0;
 	double time_interval_mean = 0;
+	
 	int num_left = 0;
+	int num_left_copy = 0;
+
+	/*Track break point during pre-mapping */
+	int is_break_at_uncensored = 0;
+
+	/*Track break point during pre-mapping */
+	int is_break_at_censored = 0;
+
 	int used_sample_num = 0;
 	int extrapolation_size = 0;
 	int updated_cens_uc_num_size = 0;
 	int i;
 	int last_1_index = (*cens_uc_num)->size - 2;
 	int last_4_index = (*cens_uc_num)->size - 5;
+	int actual_updated_size = 0;
+	int count = 0;
+	int extra = 0;
 
 	/* calculate the total number (censored and uncensored) already used */
 	for(i = 0; i < (*cens_uc_num)->size; i ++)
@@ -216,6 +229,7 @@ int KM_3p_extrapolation(struct CENS_UC_NUM** cens_uc_num, struct CENS_UC_NUM** u
 	/* TODO should error check here */
 	num_left = sample_size - used_sample_num;
 
+	/*Calculate the mean for uncensored, censored and time interval */
 	for(i = 0; i < 3; i++)
 	{
 		/*
@@ -231,16 +245,68 @@ int KM_3p_extrapolation(struct CENS_UC_NUM** cens_uc_num, struct CENS_UC_NUM** u
 	}
 
 	time_interval_mean = (*cens_uc_num)->time[last_1_index] - (*cens_uc_num)->time[last_4_index];
-	mean_last_uncensored = mean_last_uncensored / 3;
-	mean_last_censored = mean_last_censored / 3;
+	mean_last_uncensored = (int)floor(mean_last_uncensored / 3);
+	mean_last_censored = (int)floor(mean_last_censored / 3);
+
 	time_interval_mean = time_interval_mean / 3;
 	
 	/* Calculate how many points we should extrapolate */
 	extrapolation_size = ceil((double)num_left / (mean_last_uncensored + mean_last_censored));
+
 	updated_cens_uc_num_size = (*cens_uc_num)->size + extrapolation_size;
 
-	check(alloc_CENS_UC_NUM(updated_cens_uc_num, updated_cens_uc_num_size) == 0, "Failed in allocating CENS_UC_NUM structure");
+	/*If both mean_last_uncensored and mean_last_censored are zero return copy cens_uc_num to updated_cens_uc_num */
+	if(mean_last_uncensored < EXP && mean_last_censored < EXP) {
+		check(alloc_CENS_UC_NUM(updated_cens_uc_num, (*cens_uc_num)->size) == 0, "Failed in allocating CENS_UC_NUM structure");
+		/* Create a copy for the original cens_uc_num struct */
+		for(i = 0; i < (*cens_uc_num)->size; i++)
+		{
+			(*updated_cens_uc_num)->censored[i] = (*cens_uc_num)->censored[i];
+			(*updated_cens_uc_num)->uncensored[i] = (*cens_uc_num)->uncensored[i];
+			(*updated_cens_uc_num)->time[i] = (*cens_uc_num)->time[i];
+		}
+		return 0;
+	}
 
+	num_left_copy = num_left;
+
+
+	/* Pre-mapping to find the actual extrapolation number */
+	while(num_left_copy >= 0) {
+		num_left_copy = num_left_copy - mean_last_uncensored;
+		count++;
+		if(num_left_copy >= 0) {
+			is_break_at_uncensored = 0;
+			extra = num_left_copy;
+		} else {
+			is_break_at_uncensored = 1;
+			break;
+		}
+
+		num_left_copy = num_left_copy - mean_last_censored;
+
+		if(num_left_copy > 0) {
+			is_break_at_censored = 0;
+			extra = num_left_copy;
+		} else {
+			is_break_at_censored = 1;
+			break;
+		}
+
+		if(num_left_copy == 0) {
+			is_break_at_uncensored = 0;
+			is_break_at_censored = 0;
+			break;
+		}
+	}
+
+	//printf("Actual size, number left: %i, %i %i, %i, \n", count, num_left, mean_last_uncensored, mean_last_censored);
+
+	actual_updated_size = (*cens_uc_num)->size + count;
+
+	check(alloc_CENS_UC_NUM(updated_cens_uc_num, actual_updated_size) == 0, "Failed in allocating CENS_UC_NUM structure");
+	
+	/* Create a copy for the original cens_uc_num struct */
 	for(i = 0; i < (*cens_uc_num)->size; i++)
 	{
 		(*updated_cens_uc_num)->censored[i] = (*cens_uc_num)->censored[i];
@@ -248,24 +314,25 @@ int KM_3p_extrapolation(struct CENS_UC_NUM** cens_uc_num, struct CENS_UC_NUM** u
 		(*updated_cens_uc_num)->time[i] = (*cens_uc_num)->time[i];
 	}
 
-	for(i = (*cens_uc_num)->size; i < ((*cens_uc_num)->size + extrapolation_size); i++)
-	{
+	for(i = (*cens_uc_num)->size; i < actual_updated_size; i++) {
 		(*updated_cens_uc_num)->time[i] = (*updated_cens_uc_num)->time[i-1] + time_interval_mean;
+		if(i == actual_updated_size -1) {
 
-		if (mean_last_uncensored<num_left)
-			(*updated_cens_uc_num)->uncensored[i] = mean_last_uncensored;
-		else
-			(*updated_cens_uc_num)->uncensored[i] = num_left;
+			if(is_break_at_uncensored) {
+				(*updated_cens_uc_num)->uncensored[i] = extra;
+				(*updated_cens_uc_num)->censored[i] = 0;
+			} else if(is_break_at_censored) {
+				(*updated_cens_uc_num)->uncensored[i] = mean_last_uncensored;
+				(*updated_cens_uc_num)->censored[i] = extra;
+			} else {
+				(*updated_cens_uc_num)->uncensored[i] = mean_last_censored;
+				(*updated_cens_uc_num)->censored[i] = mean_last_uncensored;
+			}
 
-		/* We update the num_left to make sure that the total number of samples in the extrapolation group cannot be larger than the total number of samples */
-		num_left = num_left - mean_last_uncensored;
-
-		if (mean_last_censored<num_left)
-			(*updated_cens_uc_num)->censored[i] =  mean_last_censored;
-		else
-			(*updated_cens_uc_num)->censored[i] =  num_left;
-
-		num_left = num_left - mean_last_censored;
+		} else {
+			(*updated_cens_uc_num)->uncensored[i] = mean_last_censored;
+			(*updated_cens_uc_num)->censored[i] =  mean_last_uncensored;
+		}
 	}
 
 	return 0;

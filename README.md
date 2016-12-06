@@ -34,6 +34,7 @@ hist_median = sstat_hist.hist_median(bin, range)
 hist_median.round(3) => 2.500
 ``````
 #### Kaplan Meier estimator for survival prediction
+```ruby
 sstat_surv = SStat::Surv.new
 #event time for samples
 time = [1, 2, 3, 4, 5, 6, 7]
@@ -43,6 +44,7 @@ time = [1, 2, 3, 4, 5, 6, 7]
 censored = [1, 1, 0, 0, 0, 1, 0]
 sstat_surv.kaplan_meier(time, censored)
 # output {"time" => [3.0, 4.0, 5.0, 7.0], "prob"=>[0.8, 0.6000000000000001, 0.4, 0.0]}
+``````
 
 ## Development
 

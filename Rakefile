@@ -30,7 +30,7 @@ end
 
 spec = Gem::Specification.new do |s|
     s.name = "sstat"
-    s.version = '0.0.10'
+    s.version = '0.0.12'
     s.files = Dir['bin/**/*', 'ext/**/*', 'lib/**/*']
     s.platform = Gem::Platform::RUBY
     s.license = "MIT"

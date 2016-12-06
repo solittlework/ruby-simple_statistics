@@ -142,7 +142,6 @@ describe SimpleStatistics do
         puts "KM 1"
         puts res
 
-=begin
         testing_file_3 = Dir.pwd + '/spec/testing_data/testing_km_3.csv'
         time_3 = read_csv_by_column(testing_file_3, 'Time')
         cens_3 = read_csv_by_column(testing_file_3, 'Censored')
@@ -153,7 +152,6 @@ describe SimpleStatistics do
         res_2 = sstat_instance.kaplan_meier(time_3, cens_3)
         puts "KM 2"
         puts res_2
-=end
     end
 
     it 'check kaplan meier function 3p extrapolation' do
@@ -165,7 +163,9 @@ describe SimpleStatistics do
         time = array_to_double(time)
         cens = array_to_censored(cens)
         res = sstat_instance.kaplan_meier_3p_extraploation(time, cens)
-        expect(res["time"].last.round(3)).to be 18.765
+        
+        expect(res["time"].last.round(3)).to be 18.76
+
         expect(res["prob"].last.round(3)).to be 0.000
 
         puts "2st testing"

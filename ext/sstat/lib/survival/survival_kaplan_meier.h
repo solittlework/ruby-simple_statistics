@@ -12,6 +12,17 @@
  * @return CENS_UC_NUM structure
  */
  #define EXP 1e-12
+
+double max_time_point(double* time, int size) {
+	double max = 0;
+	for(int i = 0; i < size; i++) {
+		if(time[i] > max)
+			max = time[i];
+	}
+
+	return max;
+}
+
 int censored_uncensred_each_time_range(double* time, int* censored, int size,  struct CENS_UC_NUM** cens_ucens_number)
 {
 	int i, count_at, uncensored_num_at, censored_num_at;
@@ -32,7 +43,6 @@ int censored_uncensred_each_time_range(double* time, int* censored, int size,  s
 	}
 
 	qsort(time_censored_array, size, sizeof(struct point), &point_compare_x);
-	//print_points(time_censored_array, size);
 
 	/* count number of unique uncensored time point */
 	int count = 0;
@@ -194,7 +204,7 @@ int kaplan_meier(double* time, int* censored, int size, curve* KM_curve)
 /**
  * @brief extend the KM curve based on the last 3 points
  */
-int KM_3p_extrapolation(struct CENS_UC_NUM** cens_uc_num, struct CENS_UC_NUM ** updated_cens_uc_num, int sample_size)
+int KM_3p_extrapolation(struct CENS_UC_NUM** cens_uc_num, struct CENS_UC_NUM ** updated_cens_uc_num, int sample_size, double max_time_point)
 {
 	int mean_last_uncensored = 0;
 	int mean_last_censored = 0;
@@ -213,6 +223,7 @@ int KM_3p_extrapolation(struct CENS_UC_NUM** cens_uc_num, struct CENS_UC_NUM ** 
 	int extrapolation_size = 0;
 	int updated_cens_uc_num_size = 0;
 	int i;
+	int last_index = (*cens_uc_num)->size - 1;
 	int last_1_index = (*cens_uc_num)->size - 2;
 	int last_4_index = (*cens_uc_num)->size - 5;
 	int actual_updated_size = 0;
@@ -300,8 +311,6 @@ int KM_3p_extrapolation(struct CENS_UC_NUM** cens_uc_num, struct CENS_UC_NUM ** 
 		}
 	}
 
-	//printf("Actual size, number left: %i, %i %i, %i, \n", count, num_left, mean_last_uncensored, mean_last_censored);
-
 	actual_updated_size = (*cens_uc_num)->size + count;
 
 	check(alloc_CENS_UC_NUM(updated_cens_uc_num, actual_updated_size) == 0, "Failed in allocating CENS_UC_NUM structure");
@@ -313,6 +322,9 @@ int KM_3p_extrapolation(struct CENS_UC_NUM** cens_uc_num, struct CENS_UC_NUM ** 
 		(*updated_cens_uc_num)->uncensored[i] = (*cens_uc_num)->uncensored[i];
 		(*updated_cens_uc_num)->time[i] = (*cens_uc_num)->time[i];
 	}
+
+	time_interval_mean = (max_time_point - (*cens_uc_num)->time[last_index]) / count;
+	printf("Time interval: %f \n", time_interval_mean);
 
 	for(i = (*cens_uc_num)->size; i < actual_updated_size; i++) {
 		(*updated_cens_uc_num)->time[i] = (*updated_cens_uc_num)->time[i-1] + time_interval_mean;
@@ -346,6 +358,7 @@ int kaplan_meier_3p_extrapolation(double* time, int* censored, int size, struct 
 {
 	int proc_state = 0;
 	struct CENS_UC_NUM* cens_ucens_number;
+	double max_time = max_time_point(time, size);
 	proc_state = censored_uncensred_each_time_range(time, censored, size, &cens_ucens_number);
 	struct point* KM =  alloc_points(size);
 
@@ -353,7 +366,7 @@ int kaplan_meier_3p_extrapolation(double* time, int* censored, int size, struct 
 	if(cens_ucens_number->size > 6)
 	{
 		struct CENS_UC_NUM* updated_cens_ucens_number;
-		proc_state = KM_3p_extrapolation(&cens_ucens_number, &updated_cens_ucens_number, size);
+		proc_state = KM_3p_extrapolation(&cens_ucens_number, &updated_cens_ucens_number, size, max_time);
 		calculate_kaplan_meier(size, updated_cens_ucens_number, &KM);
 		KM_curve->point_array = KM;
 		KM_curve->size = updated_cens_ucens_number->size;

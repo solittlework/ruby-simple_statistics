@@ -25,14 +25,24 @@ require 'sstat'
 #### Basic Histogram Analysis
 ```ruby
 #init simple statistics histogram
-sstat_instance = SStat::Hist.new
+sstat_hist = SStat::Hist.new
 bin = [2, 3, 5, 2, 1]
 range = [0, 1, 2, 3, 4, 5]
-hist_mean = sstat_instance.hist_mean(bin, range)
+hist_mean = sstat_hist.hist_mean(bin, range)
 # => hist_mean.round(3) => 2.269
-hist_median = sstat_instance.hist_median(bin, range)
+hist_median = sstat_hist.hist_median(bin, range)
 hist_median.round(3) => 2.500
 ``````
+#### Kaplan Meier estimator for survival prediction
+sstat_surv = SStat::Surv.new
+#event time for samples
+time = [1, 2, 3, 4, 5, 6, 7]
+# cesnroed information
+# 1 -> censored. The event time is the patient's last visit time.
+# 0 -> uncensored. The event time is the patient's actual dead time.
+censored = [1, 1, 0, 0, 0, 1, 0]
+sstat_surv.kaplan_meier(time, censored)
+# output {"time" => [3.0, 4.0, 5.0, 7.0], "prob"=>[0.8, 0.6000000000000001, 0.4, 0.0]}
 
 ## Development
 

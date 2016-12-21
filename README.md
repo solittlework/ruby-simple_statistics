@@ -1,6 +1,8 @@
 # SimpleStatistics
 
-Simple Statistics aims to provide basic statistic functions for Ruby. To speed up, all of the functions here are written by C, and then wrapped using Ruby. Some of the functions are transferred from the GNU Scientific Library. This gem is still under active development. Therefore, please only use the functions shown in the Usage Part. If you have found any bugs or specifc requirements, please email to haipeng3@ualberta.ca
+Simple Statistics aims to provide high performance survival statistic functions for Ruby. For speed, all of the functions in this gem are natively written by C, and then wrapped into Ruby. Some of the functions are transferred from the GNU Scientific Library.
+
+This gem is still under active development. If you have found any bugs or specifc requirements, please email haipeng3@ualberta.ca
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -9,41 +11,47 @@ Add this line to your application's Gemfile:
 gem 'sstat'
 ```
 
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
+Then install using
+```ruby
     $ gem install 
+```
 
 ## Usage
 
 ```ruby
+# Include the library
 require 'sstat'
 ``````
 #### Basic Histogram Analysis
 ```ruby
-#init simple statistics histogram
+# Create statistics instance
 sstat_hist = SStat::Hist.new
 bin = [2, 3, 5, 2, 1]
 range = [0, 1, 2, 3, 4, 5]
 hist_mean = sstat_hist.hist_mean(bin, range)
-# => hist_mean.round(3) => 2.269
+# Expected value for hist_mean.round(3): 2.269
+
 hist_median = sstat_hist.hist_median(bin, range)
+# Expected  value for hist_median.round(3): 2.500
 hist_median.round(3) => 2.500
 ``````
 #### Kaplan Meier estimator for survival prediction
 ```ruby
-sstat_surv = SStat::Surv.new
-#event time for samples
+sstat_survival = SStat::Surv.new
+# Event time for samples
 time = [1, 2, 3, 4, 5, 6, 7]
-# cesnroed information
+# Cesnroed information
 # 1 -> censored. The event time is the patient's last visit time.
 # 0 -> uncensored. The event time is the patient's actual dead time.
 censored = [1, 1, 0, 0, 0, 1, 0]
-sstat_surv.kaplan_meier(time, censored)
-# output {"time" => [3.0, 4.0, 5.0, 7.0], "prob"=>[0.8, 0.6000000000000001, 0.4, 0.0]}
+
+# Calculate the Kaplan-Meier index without extraploation
+# Reference: https://en.wikipedia.org/wiki/Kaplan%E2%80%93Meier_estimator
+sstat_survival.kaplan_meier(time, censored)
+
+# Calculate Kaplan-Meier with extrapoloation based on last 3 points
+sstat_instance.kaplan_meier_3p_extraploation(time, censored)
+
 ``````
 
 ## Development

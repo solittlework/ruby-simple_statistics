@@ -2,6 +2,8 @@
 #define _HISTOGRAM_MEAN_H
 #include "histogram_type.h"
 
+/* The functions here come from GSL libaray */
+
 /*
 * Mean of a histogram
 * Compute the bin-weighted arithmetic mean M of a histogram using the recurrence relation

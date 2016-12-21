@@ -1,0 +1,19 @@
+#include "survival_kaplan_meier.h"
+
+/* Memeory test for kaplan meier calculation */
+int main(int argc, char const *argv[])
+{
+    struct curve KM_curve;
+    struct curve KM_curve_3p;
+
+    double _time[14] = {1.0, 2.1, 3.2, 4.5, 5.5, 6.2, 7.4, 8.5, 9.1, 10.4, 11.3, 12.5, 13.2, 14.7};
+    int _censored[14] = {1, 0 , 0, 0, 1, 1, 1, 0 , 1, 1,0,1,0,1};
+    kaplan_meier(_time, _censored, 14, &KM_curve);
+    
+    free(KM_curve.point_array);
+
+    kaplan_meier_3p_extrapolation(_time, _censored, 14, &KM_curve_3p);
+    free(KM_curve_3p.point_array);
+
+    return 0;
+}

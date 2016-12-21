@@ -3,6 +3,8 @@
 
 #include "histogram.h"
 
+/* Memeory test for histogram functions */
+
 int main(int argc, char const *argv[])
 {
     int n = 5;
@@ -29,6 +31,7 @@ int main(int argc, char const *argv[])
     histogram_mean(h, &hmean);
     printf("histogram mean %f \n", hmean);
 
+    /* Test histogram median */
     histogram_median(h, &hmedian);
     printf("histogram median %f \n", hmedian);
 

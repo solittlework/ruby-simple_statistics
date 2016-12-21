@@ -5,16 +5,15 @@
 #include <stddef.h>
 #include "type_def.h"
 
-/* Debug macro from http://c.learncodethehardway.org/book/ex20.html */
-
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
 
+/* Define debug macros  */
 #ifdef NDEBUG
-#define debug(M, ...)
+    #define debug(M, ...)
 #else
-#define debug(M, ...) fprintf(stderr, "DEBUG %s:%d: " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+    #define debug(M, ...) fprintf(stderr, "DEBUG %s:%d: " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #endif
 
 #define clean_errno() (errno == 0 ? "None" : strerror(errno))
@@ -35,9 +34,11 @@
 
 #define check_debug(A, M, ...) if(!(A)) { debug(M, ##__VA_ARGS__); errno=0; goto error; }
 
+/* Define structures for survival functions */
+
 enum ERRORS {
-	OUTOF_MEMORY_ERROR = 1,
-	NOT_EMPTY_ERROR = 2,
+    OUTOF_MEMORY_ERROR = 1,
+    NOT_EMPTY_ERROR = 2,
 };
 
 /**
@@ -45,67 +46,75 @@ enum ERRORS {
  */
 typedef struct CENS_UC_NUM
 {
-	int * uncensored;
-	int * censored;
-	double* time; //time series
-	int size;
+    int * uncensored;
+    int * censored;
+    double* time; /* time series */
+    int size;
 } CENS_UC_NUM;
 
+/**
+ * @brief free CENS_UC_NUM structure
+ */
 void free_CENS_UC_NUM(struct CENS_UC_NUM** instance)
 {
-	if ( (*instance) != NULL)
-	{
-		if((*instance)->uncensored != NULL)
-			free((*instance)->uncensored);
+    if ( (*instance) != NULL)
+    {
+        if((*instance)->uncensored != NULL)
+            free((*instance)->uncensored);
 
-		if((*instance)->censored != NULL)
-			free((*instance)->censored);
+        if((*instance)->censored != NULL)
+            free((*instance)->censored);
 
-		if((*instance)->time != NULL)
-			free((*instance)->time);
+        if((*instance)->time != NULL)
+            free((*instance)->time);
 
-		free((*instance));
-	}
+        free((*instance));
+    }
 }
 
+/**
+ * @brief print CENS_UC_NUM structure
+ */
 void print_CENS_UC_NUM(struct CENS_UC_NUM *cens_uncens_instance)
 {
-	int i;
-	for( i = 0; i < cens_uncens_instance->size; i++ )
-	{
-		printf("Time : %f -- Uncensored : %i -- Censored : %i \n", 
-			cens_uncens_instance-> time[i],
-			cens_uncens_instance-> uncensored[i],
-			cens_uncens_instance-> censored[i]);
-	}
+    int i;
+    for( i = 0; i < cens_uncens_instance->size; i++ )
+    {
+        printf("Time : %f -- Uncensored : %i -- Censored : %i \n", 
+            cens_uncens_instance-> time[i],
+            cens_uncens_instance-> uncensored[i],
+            cens_uncens_instance-> censored[i]);
+    }
 }
 
+/**
+ * @brief allocate CENS_UC_NUM structure
+ */
 int alloc_CENS_UC_NUM(struct CENS_UC_NUM** cens_uncens_instance, int size)
 {
 
-	(*cens_uncens_instance) = malloc(sizeof(struct CENS_UC_NUM));
-	check_mem_1(cens_uncens_instance);
+    (*cens_uncens_instance) = malloc(sizeof(struct CENS_UC_NUM));
+    check_mem_1(cens_uncens_instance);
 
-	(*cens_uncens_instance)->size = size;
+    (*cens_uncens_instance)->size = size;
 
-	(*cens_uncens_instance)->uncensored = malloc(size * sizeof(int));
-	check_mem_1(cens_uncens_instance);
+    (*cens_uncens_instance)->uncensored = malloc(size * sizeof(int));
+    check_mem_1(cens_uncens_instance);
 
-	(*cens_uncens_instance)->censored = malloc(size * sizeof(int));
-	check_mem_1(cens_uncens_instance);
+    (*cens_uncens_instance)->censored = malloc(size * sizeof(int));
+    check_mem_1(cens_uncens_instance);
 
-	(*cens_uncens_instance)->time = malloc(size * sizeof(double));
-	check_mem_1(cens_uncens_instance);
+    (*cens_uncens_instance)->time = malloc(size * sizeof(double));
+    check_mem_1(cens_uncens_instance);
 
-	return 0;
-	
+    return 0;
+    
 error_1:
-	if((*cens_uncens_instance) == NULL)
-		return OUTOF_MEMORY_ERROR;
-	else
-		free_CENS_UC_NUM(cens_uncens_instance);
-		free((*cens_uncens_instance));
+    if((*cens_uncens_instance) == NULL)
+        return OUTOF_MEMORY_ERROR;
+    else
+        free_CENS_UC_NUM(cens_uncens_instance);
+        free((*cens_uncens_instance));
 }
-
 
 #endif

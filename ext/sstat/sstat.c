@@ -1,5 +1,8 @@
 #include "sstat.h"
 
+/*! 
+ *\brief Ruby wrapper C for percentile function
+ */
 static VALUE rb_percentile(VALUE self, VALUE array, VALUE target)
 {
     int size = RARRAY_LEN(array);
@@ -17,6 +20,9 @@ static VALUE rb_percentile(VALUE self, VALUE array, VALUE target)
     return DBL2NUM(_percentile);
 }
 
+/*! 
+ *\brief Ruby wrapper C for percentile index function
+ */
 static VALUE rb_percentile_index(VALUE self, VALUE array, VALUE target)
 {
     int size = RARRAY_LEN(array);
@@ -34,6 +40,9 @@ static VALUE rb_percentile_index(VALUE self, VALUE array, VALUE target)
     return INT2NUM(_percentile_index);
 }
 
+/*! 
+ *\brief Ruby wrapper C for index_less_equal function
+ */
 static VALUE rb_index_less_equal(VALUE self, VALUE array, VALUE target)
 {
     int size = RARRAY_LEN(array);
@@ -52,6 +61,9 @@ static VALUE rb_index_less_equal(VALUE self, VALUE array, VALUE target)
     return INT2NUM(_index);
 }
 
+/*! 
+ *\brief Ruby wrapper C for histogram_mean function
+ */
 static VALUE rb_hist_mean(VALUE self, VALUE bin, VALUE range)
 {
     int bin_size = RARRAY_LEN(bin);
@@ -80,6 +92,9 @@ static VALUE rb_hist_mean(VALUE self, VALUE bin, VALUE range)
     return DBL2NUM(hmean);
 }
 
+/*! 
+ *\brief Ruby wrapper C for histogram_median function
+ */
 static VALUE rb_hist_median(VALUE self, VALUE bin, VALUE range)
 {
     int bin_size = RARRAY_LEN(bin);
@@ -108,6 +123,9 @@ static VALUE rb_hist_median(VALUE self, VALUE bin, VALUE range)
     return DBL2NUM(hmedian);
 }
 
+/*! 
+ *\brief Ruby wrapper C for kaplan_meier function
+ */
 static VALUE rb_kaplan_meier(VALUE self, VALUE time, VALUE censored)
 {
     int size = RARRAY_LEN(time);
@@ -124,7 +142,7 @@ static VALUE rb_kaplan_meier(VALUE self, VALUE time, VALUE censored)
     }
 
     proc_status = kaplan_meier(_time, _censored, size, &KM_curve);
-    if (proc_status == 0 )
+    if (proc_status == 0)
     {
         VALUE KM_x = rb_ary_new2(KM_curve.size);
         VALUE KM_y = rb_ary_new2(KM_curve.size);
@@ -149,6 +167,9 @@ static VALUE rb_kaplan_meier(VALUE self, VALUE time, VALUE censored)
     }
 }
 
+/*! 
+ *\brief Ruby wrapper C for kaplan_meier_3p_extrapolation function
+ */
 static VALUE rb_kaplan_meier_3p_extraploation(VALUE self, VALUE time, VALUE censored)
 {
     int size = RARRAY_LEN(time);
@@ -183,13 +204,16 @@ static VALUE rb_kaplan_meier_3p_extraploation(VALUE self, VALUE time, VALUE cens
 
         free(_time);
         free(_censored);
-        //free(KM_curve.point_array);
+
         return result;
     } else {
         return Qfalse;
     }
 }
 
+/*! 
+ *\brief Ruby wrapper C for log_rank_test function
+ */
 static VALUE rb_log_rank_test(VALUE self, VALUE _time_1, VALUE _cens_1, VALUE _time_2, VALUE _cens_2)
 {
     int size_1 = RARRAY_LEN(_time_1);

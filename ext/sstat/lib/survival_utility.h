@@ -14,14 +14,16 @@ struct array create_sorted_unique_array(double* array, int size)
 {
 	struct array arr;
 	int i;
-	//To speed up, choose to do not memset arr.
+
+	/* NOTE: For performance, there is no preset value for arr.D_ptr */
 	arr.D_ptr = NULL;
 	int count;
 
 	qsort(array, size, sizeof(double), &compare_double);
 
 	count = 1;
-	//calcualte number of unique
+
+	/* Calculate the unique number */
 	for(i = 1; i < size; ++i)
 	{
 		if(array[i] != array[i-1])
@@ -32,7 +34,7 @@ struct array create_sorted_unique_array(double* array, int size)
 
 	double * unique_arr = (double *) malloc(count * sizeof(double));
 
-	//assign unique elements
+	/* Assign unique elements */
 	count = 1;
 	unique_arr[0] = array[0];
 	for(i = 1; i < size; ++i)
@@ -50,12 +52,14 @@ struct array create_sorted_unique_array(double* array, int size)
 	return arr;
 }
 
+/**
+ * @brief merge (concatenate) two given arrays.
+ */
 array merge_two_array(double* array_1, int size_1, double* array_2, int size_2)
 {
 	int i;
 	struct array arr;
 
-	//To speed up, choose to do not memset arr.
 	arr.D_ptr = NULL;
 
 	int total_size = size_1 + size_2;
@@ -76,6 +80,9 @@ array merge_two_array(double* array_1, int size_1, double* array_2, int size_2)
 	return arr;
 }
 
+/**
+ * @brief find index of a given array where value is equal to given value.
+ */
 int find_first_index_has(double* arr, int size, double value)
 {
 	int i;
@@ -87,10 +94,13 @@ int find_first_index_has(double* arr, int size, double value)
 		}
 	}
 
-	//no value in the array
+	/* No value was found */
 	return -1;
 }
 
+/**
+ * @brief find the number of censored andn uncensored samples in each range.
+ */
 struct CENS_UC_NUM group_N_given_range(double* time, int* censored, int size, double* unique_time, int unique_time_size)
 {
 	int i, count_at, uncensored_num_at, censored_num_at;
@@ -101,7 +111,7 @@ struct CENS_UC_NUM group_N_given_range(double* time, int* censored, int size, do
 	for (i = 0; i < size; i++)
 	{
 		time_censored_array[i].x = time[i];
-		//not very fast here, prefer to define another point
+		/* TODO: speed up */
 		if (censored[i] > 0)
 			time_censored_array[i].y = 1;
 		else
@@ -119,7 +129,7 @@ struct CENS_UC_NUM group_N_given_range(double* time, int* censored, int size, do
 		censored_num[i] = 0;
 	}
 
-	//record current time point
+	/* Save a copy of unique time points found */
 	time_at = unique_time[0];
 	count_at = 0;
 	uncensored_num_at = 0;

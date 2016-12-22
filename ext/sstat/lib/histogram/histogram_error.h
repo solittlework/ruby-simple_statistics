@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+/* Define error handler structure and  functions for histogram */
 typedef enum {
     HIST_SUCCESS = 0,
     M_ALLOC_ERR = 1,

@@ -5,6 +5,7 @@
 #include "global_utility.h"
 #include <math.h>
 #include <stdio.h>
+
 /**
  * @brief calculate the number of samples censored or uncenosored (die) at each time ragne
  * @param time Event time array
@@ -17,10 +18,10 @@ int censored_uncensred_each_time_range(double* time, int* censored, int size,  s
 	double tmp, time_at;
 
 
-	//sort time and censored based on time together, time can censored array
+	/* Sort time and censored based on time together, time can censored array */
 	struct point* time_censored_array = alloc_points(size);
 
-	//censored, if censored[] is positive
+	/* Sample i is censored, if censored[i] > 0 */
 	for (i = 0; i < size; i++)
 	{
 		time_censored_array[i].x = time[i];
@@ -31,12 +32,11 @@ int censored_uncensred_each_time_range(double* time, int* censored, int size,  s
 	}
 
 	qsort(time_censored_array, size, sizeof(struct point), &point_compare_x);
-	//print_points(time_censored_array, size);
 
-	/* count number of unique uncensored time point */
+	/* Count number of unique uncensored time point */
 	int count = 0;
 	for (i = 0; i < size; i++)
-	{	//uncensored
+	{	/* For uncensored */
 		if (time_censored_array[i].y < 0)
 		{
 			if (count == 0)
@@ -46,7 +46,8 @@ int censored_uncensred_each_time_range(double* time, int* censored, int size,  s
 			}
 
 			if (count > 0)
-			{	//unique
+			{	
+				/* Calculate unique event time */
 				if (time_censored_array[i].x != tmp)
 				{
 					count++;
@@ -55,9 +56,7 @@ int censored_uncensred_each_time_range(double* time, int* censored, int size,  s
 			}
 		}
 	}
-/*
-	double* unique_uncensored_time = (double *) malloc(count * sizeof(double));
-	check_mem(unique_uncensored_time);*/
+
 	alloc_CENS_UC_NUM(cens_ucens_number, count);
 
 	count = 0;
@@ -85,7 +84,7 @@ int censored_uncensred_each_time_range(double* time, int* censored, int size,  s
 		}
 	}
 
-	//record current time point
+	/* Store a copy of latest event time points */
 	time_at = (*cens_ucens_number)->time[0];
 	count_at = 0;
 	uncensored_num_at = 0;
@@ -102,7 +101,7 @@ int censored_uncensred_each_time_range(double* time, int* censored, int size,  s
 			else
 				uncensored_num_at++;
 
-			//if the last sample is censored, follow block stores counting for last time unique uncensored period
+			/* If the last sample is censored, follow block stores counting for last time unique uncensored period */
 			if (i == size - 1)
 			{
 				(*cens_ucens_number)->uncensored[count_at] = uncensored_num_at;
@@ -119,11 +118,11 @@ int censored_uncensred_each_time_range(double* time, int* censored, int size,  s
 
 			count_at++;
 
-			//reset uncensored_num_at and censored_num_at
+			/* reset uncensored_num_at and censored_num_at */
 			uncensored_num_at = 0;
 			censored_num_at = 0;
 
-			//go to next time range
+			/* Jump to next time range */
 			if(count_at < (*cens_ucens_number)-> size)
 				time_at = (*cens_ucens_number)->time[count_at];
 
@@ -171,10 +170,10 @@ void calculate_kaplan_meier(int size, const struct CENS_UC_NUM* cens_ucens_numbe
 }
 
 /**
- * @brief calculate the kaplan meier
+ * @brief Calculate the kaplan meier
  * @param time Event time array
- * @param censored censored information: positive -> censored; zero or negative -> uncensored
- * @param size of the time array and censored array
+ * @param censored Censored information: positive -> censored; zero or negative -> uncensored
+ * @param size  size of the time array (censored) array
  * @return CENS_UC_NUM structure
  */
 int kaplan_meier(double* time, int* censored, int size, curve* KM_curve)
@@ -275,6 +274,13 @@ error:
 	return 1;
 }
 
+/**
+ * @brief Calculate the kaplan meier with extrapolation based on last 3 points
+ * @param time Event time array
+ * @param censored Censored information: positive -> censored; zero or negative -> uncensored
+ * @param size  size of the time array (censored) array
+ * @return process indicator
+ */
 int kaplan_meier_3p_extrapolation(double* time, int* censored, int size, struct curve* KM_curve)
 {
 	int proc_state = 0;

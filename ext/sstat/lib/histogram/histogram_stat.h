@@ -2,7 +2,7 @@
 #define _HISTOGRAM_MEAN_H
 #include "histogram_type.h"
 
-/* The functions here come from GSL libaray */
+/* The functions are transferred from GSL libaray */
 
 /*
 * Mean of a histogram
@@ -20,7 +20,7 @@ int histogram_mean(const struct histogram* h, double* hmean)
 
     for(i = 0; i < n; i++)
     {
-        //make sure size of h->range is n + 1
+        /* make sure size of h->range is n + 1 */
 
         xi = (h->range[i+1] + h->range[i]) / 2;
         wi = h->bin[i];
@@ -34,6 +34,9 @@ int histogram_mean(const struct histogram* h, double* hmean)
     return 0;
 }
 
+/**
+ * @brief Calculate summary (area under the histogram) of a given histogram 
+ */
 int histogram_bin_sum(const struct histogram* h, double* sum)
 {
     size_t i, n;
@@ -47,6 +50,9 @@ int histogram_bin_sum(const struct histogram* h, double* sum)
     return 0;
 }
 
+/**
+ * @brief Calculate median of a given histogram
+ */
 int histogram_median(const struct histogram* h, double* hmedian)
 {
     size_t i, n;

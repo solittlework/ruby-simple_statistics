@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+ * @brief Calculate the median for ASC sorted array 
+ */
 int median_for_sorted_data(const double* sorted_data, int n, double* median)
 {
     const int lhs = (n - 1) / 2 ;
@@ -22,12 +25,15 @@ int median_for_sorted_data(const double* sorted_data, int n, double* median)
     }
     else 
     {
-        (*median) = (sorted_data[lhs] + sorted_data[rhs])/2.0 ;
+        (*median) = (sorted_data[lhs] + sorted_data[rhs]) / 2.0 ;
     }
 
     return 0;
 }
 
+/**
+ * @brief Calculate the median for given array
+ */
 int median(const double* data, int n, double* median)
 {
     int i;

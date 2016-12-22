@@ -45,9 +45,9 @@ enum ERRORS {
  */
 typedef struct CENS_UC_NUM
 {
-	int * uncensored;
-	int * censored;
-	double* time; //time series
+	int * uncensored; /* Number of ncensored samples */
+	int * censored; /* Number of censored samples */
+	double* time; /* Survival time series */
 	int size;
 } CENS_UC_NUM;
 

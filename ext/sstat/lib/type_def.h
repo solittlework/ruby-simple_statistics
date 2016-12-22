@@ -33,7 +33,7 @@ typedef struct curve {
 
 /* Define array structure */
 typedef struct array {
-	double* D_ptr; /* short for data pointer */
+	double* D_ptr; /* Short for data pointer */
 	int size;
 } array;
 

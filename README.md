@@ -55,11 +55,14 @@ sstat_instance.kaplan_meier_3p_extraploation(time, censored)
 ``````
 
 #### Log Rank Test
+```ruby
 # time_test_1 -> Event time array for first test
 # cens_test_1 -> Censored array for first test
 # time_test_2 -> Event time array for second test
 # cens_test_2 -> Censored array for second test
 sstat_instance.log_rank_test(time_test_1, cens_test_1, time_test_2, cens_test_2)
+``````
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

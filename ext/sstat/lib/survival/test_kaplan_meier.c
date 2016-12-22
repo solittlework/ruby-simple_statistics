@@ -1,6 +1,5 @@
-/*
-* This content of this file is used to generate binary to test kaplan meier
-*/
+/* Memeory test for Kaplan Meier Estimator*/
+
 #include "survival_kaplan_meier.h"
 
 int main(int argc, char const *argv[])

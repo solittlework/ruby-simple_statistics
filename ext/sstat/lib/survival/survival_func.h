@@ -6,6 +6,9 @@
 #include "survival_def.h"
 #include "survival_utility.h"
 
+/**
+ * @brief Calculate the index of a given percentile
+ */
 int precentile_index(double* array, int size, double target_percentile)
 {
     double percentage_each = 1.0 / size;
@@ -26,6 +29,9 @@ int precentile_index(double* array, int size, double target_percentile)
     return size -1;
 }
 
+/**
+ * @brief Get the value of precentile for given index 
+ */
 double precentile(double* array, int size, double target_percentile)
 {
     int index;
@@ -34,6 +40,9 @@ double precentile(double* array, int size, double target_percentile)
     return array[index];
 }
 
+/**
+ * @brief Find the first index in an array with value less than the target (given) value
+ */
 int index_less_equal(double* array, int size, double target)
 {
     int i;
@@ -47,15 +56,19 @@ int index_less_equal(double* array, int size, double target)
     return i;
 }
 
+/**
+ * @brief calculate the log rank test
+ * Reference: https://en.wikipedia.org/wiki/Log-rank_test
+ */
 double log_rank_test(double* time_1, int* censored_1, double* time_2, int* censored_2, int size_1, int size_2)
 {
     int i, time_pnt_size;
     int index;
-    
+
     array merged_time_pnts = merge_two_array(time_1, size_1, time_2, size_2);
     array merged_uniq_time_pnts = create_sorted_unique_array(merged_time_pnts.D_ptr, merged_time_pnts.size);
 
-    /* The lengths of Group_N_1 and Group_N_2 are not expected to be same. Step 1. create unique time array which inlcude time points for both */
+    //The lengths of Group_N_1 and Group_N_2 are not expected to be same. Step 1. create unique time array which inlcude time points for both
     CENS_UC_NUM Group_N_1 = group_N_given_range(time_1, censored_1, size_1, merged_uniq_time_pnts.D_ptr, merged_uniq_time_pnts.size);
     CENS_UC_NUM Group_N_2 = group_N_given_range(time_2, censored_2, size_2, merged_uniq_time_pnts.D_ptr, merged_uniq_time_pnts.size);
 
@@ -85,6 +98,7 @@ double log_rank_test(double* time_1, int* censored_1, double* time_2, int* censo
     double* E_i = (double*) malloc(time_pnt_size * sizeof(double));
     double* V_i = (double*) malloc(time_pnt_size * sizeof(double));
 
+    /* Update at_risk for 1 and 2 based on combined_time_arr. */
     for (i = 0; i < time_pnt_size; ++i)
     {
         index = find_first_index_has(Group_N_1.time, Group_N_1.size, merged_uniq_time_pnts.D_ptr[i]);
@@ -125,14 +139,9 @@ double log_rank_test(double* time_1, int* censored_1, double* time_2, int* censo
 
     for (i = 0; i < time_pnt_size; ++i)
     {
-
-        N_i[i] = (N1_at_risk[i] + N2_at_risk[i]);
-
+        N_i[i] = N1_at_risk[i] + N2_at_risk[i];
         O_i[i] = (combined_Group_N_1.uncensored[i] + combined_Group_N_2.uncensored[i]);
-
-        if(N_i[i] != 0)
-        {
-            E_i[i] = 1.0 * N1_at_risk[i] * O_i[i] / N_i[i];
+        E_i[i] = 1.0 * N1_at_risk[i] * O_i[i] / N_i[i];
 
         if (N_i[i] > 1)
         {
@@ -144,8 +153,7 @@ double log_rank_test(double* time_1, int* censored_1, double* time_2, int* censo
             V_i_sum += V_i[i];
         }
 
-            Z += (combined_Group_N_1.uncensored[i] - E_i[i]);
-        }
+        Z += (combined_Group_N_1.uncensored[i] - E_i[i]);
     }
 
     Z = Z / sqrt(V_i_sum);

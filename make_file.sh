@@ -1,5 +1,4 @@
 #!/bin/bash
-# A script for compiing
 rake clean
 sstat_dir="$PWD/ext/sstat"
 lib_dir="$PWD/lib"

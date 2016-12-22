@@ -29,10 +29,10 @@ int censored_uncensred_each_time_range(double* time, int* censored, int size,  s
 	double tmp, time_at;
 
 
-	//sort time and censored based on time together, time can censored array
+    /* Sort time and censored based on time together, time can censored array */
 	struct point* time_censored_array = alloc_points(size);
 
-	//censored, if censored[] is positive
+    /* Sample i is censored, if censored[i] > 0 */
 	for (i = 0; i < size; i++)
 	{
 		time_censored_array[i].x = time[i];
@@ -66,9 +66,7 @@ int censored_uncensred_each_time_range(double* time, int* censored, int size,  s
 			}
 		}
 	}
-/*
-	double* unique_uncensored_time = (double *) malloc(count * sizeof(double));
-	check_mem(unique_uncensored_time);*/
+
 	alloc_CENS_UC_NUM(cens_ucens_number, count);
 
 	count = 0;
@@ -96,7 +94,7 @@ int censored_uncensred_each_time_range(double* time, int* censored, int size,  s
 		}
 	}
 
-	//record current time point
+    /* Store a copy of latest event time points */
 	time_at = (*cens_ucens_number)->time[0];
 	count_at = 0;
 	uncensored_num_at = 0;
@@ -130,11 +128,11 @@ int censored_uncensred_each_time_range(double* time, int* censored, int size,  s
 
 			count_at++;
 
-			//reset uncensored_num_at and censored_num_at
+            /* Reset uncensored_num_at and censored_num_at */
 			uncensored_num_at = 0;
 			censored_num_at = 0;
 
-			//go to next time range
+            /* Jump to next time range */
 			if(count_at < (*cens_ucens_number)-> size)
 				time_at = (*cens_ucens_number)->time[count_at];
 
@@ -237,7 +235,7 @@ int KM_3p_extrapolation(struct CENS_UC_NUM** cens_uc_num, struct CENS_UC_NUM ** 
 		used_sample_num += (*cens_uc_num)->uncensored[i];
 	}
 
-	/* TODO should error check here */
+	/* TODO should add error check here */
 	num_left = sample_size - used_sample_num;
 
 	/*Calculate the mean for uncensored, censored and time interval */

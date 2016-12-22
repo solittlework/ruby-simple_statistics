@@ -1,6 +1,6 @@
 # SimpleStatistics
 
-Simple Statistics aims to provide high performance survival statistic functions for Ruby. For speed, all of the functions here are natively written by C, then wrapped into Ruby. Some of the functions are transferred from the GNU Scientific Library.
+Simple Statistics aims to provide high performance survival statistic functions for Ruby. For speed, all of the functions here are natively written by C, then wrapped into Ruby.
 
 This gem is still under active development. If you have found any bugs or specifc requirements, please email haipeng3@ualberta.ca
 ## Installment

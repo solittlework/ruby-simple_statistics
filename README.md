@@ -11,15 +11,15 @@ In Gemfile, add following:
 gem 'sstat'
 ```
 
-Install simple statistics using:
+Install simple statistics gem using:
 ```ruby
-    $ gem install 
+gem install 
 ```
 
 ## Usage
 
 ```ruby
-# Include the library
+# Include simple statistics
 require 'sstat'
 ``````
 #### Basic Histogram Analysis
@@ -28,12 +28,13 @@ require 'sstat'
 sstat_hist = SStat::Hist.new
 bin = [2, 3, 5, 2, 1]
 range = [0, 1, 2, 3, 4, 5]
-hist_mean = sstat_hist.hist_mean(bin, range)
-# Expected value for hist_mean.round(3): 2.269
 
+# Calculate the histogram mean
+hist_mean = sstat_hist.hist_mean(bin, range)
+
+# Calculate the histogram median
 hist_median = sstat_hist.hist_median(bin, range)
-# Expected  value for hist_median.round(3): 2.500
-hist_median.round(3) => 2.500
+
 ``````
 #### Kaplan Meier index for survival analysis
 ```ruby
@@ -45,7 +46,7 @@ time = [1, 2, 3, 4, 5, 6, 7]
 # 0 -> uncensored. The event time is the patient's actual dead time.
 censored = [1, 1, 0, 0, 0, 1, 0]
 
-# Calculate the Kaplan-Meier index without extraploation
+# Calculate Kaplan-Meier index without extraploation
 sstat_survival.kaplan_meier(time, censored)
 
 # Calculate Kaplan-Meier with extrapoloation based on last 3 points

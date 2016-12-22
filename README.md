@@ -22,7 +22,7 @@ gem install
 # Include simple statistics
 require 'sstat'
 ``````
-#### Basic Histogram Analysis
+#### Histogram
 ```ruby
 # Create statistics instance
 sstat_hist = SStat::Hist.new
@@ -36,7 +36,7 @@ hist_mean = sstat_hist.hist_mean(bin, range)
 hist_median = sstat_hist.hist_median(bin, range)
 
 ``````
-#### Kaplan Meier index for survival analysis
+#### Kaplan Meier Estimator
 ```ruby
 sstat_survival = SStat::Surv.new
 # Event time for samples
@@ -46,7 +46,7 @@ time = [1, 2, 3, 4, 5, 6, 7]
 # 0 -> uncensored. The event time is the patient's actual dead time.
 censored = [1, 1, 0, 0, 0, 1, 0]
 
-# Calculate Kaplan-Meier index without extraploation
+# Calculate Kaplan-Meier without extraploation
 sstat_survival.kaplan_meier(time, censored)
 
 # Calculate Kaplan-Meier with extrapoloation based on last 3 points

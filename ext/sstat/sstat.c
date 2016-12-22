@@ -1,7 +1,7 @@
 #include "sstat.h"
 
 /*! 
- *\brief Ruby wrapper C for percentile function
+ *\brief Ruby wrapper for percentile function
  */
 static VALUE rb_percentile(VALUE self, VALUE array, VALUE target)
 {
@@ -21,7 +21,7 @@ static VALUE rb_percentile(VALUE self, VALUE array, VALUE target)
 }
 
 /*! 
- *\brief Ruby wrapper C for percentile index function
+ *\brief Ruby wrapper for percentile index function
  */
 static VALUE rb_percentile_index(VALUE self, VALUE array, VALUE target)
 {
@@ -41,7 +41,7 @@ static VALUE rb_percentile_index(VALUE self, VALUE array, VALUE target)
 }
 
 /*! 
- *\brief Ruby wrapper C for index_less_equal function
+ *\brief Ruby wrapper for index_less_equal function
  */
 static VALUE rb_index_less_equal(VALUE self, VALUE array, VALUE target)
 {
@@ -62,7 +62,7 @@ static VALUE rb_index_less_equal(VALUE self, VALUE array, VALUE target)
 }
 
 /*! 
- *\brief Ruby wrapper C for histogram_mean function
+ *\brief Ruby wrapper for histogram_mean function
  */
 static VALUE rb_hist_mean(VALUE self, VALUE bin, VALUE range)
 {
@@ -93,7 +93,7 @@ static VALUE rb_hist_mean(VALUE self, VALUE bin, VALUE range)
 }
 
 /*! 
- *\brief Ruby wrapper C for histogram_median function
+ *\brief Ruby wrapper for histogram_median function
  */
 static VALUE rb_hist_median(VALUE self, VALUE bin, VALUE range)
 {
@@ -124,7 +124,7 @@ static VALUE rb_hist_median(VALUE self, VALUE bin, VALUE range)
 }
 
 /*! 
- *\brief Ruby wrapper C for kaplan_meier function
+ *\brief Ruby wrapper for kaplan_meier function
  */
 static VALUE rb_kaplan_meier(VALUE self, VALUE time, VALUE censored)
 {
@@ -168,7 +168,7 @@ static VALUE rb_kaplan_meier(VALUE self, VALUE time, VALUE censored)
 }
 
 /*! 
- *\brief Ruby wrapper C for kaplan_meier_3p_extrapolation function
+ *\brief Ruby wrapper for kaplan_meier_3p_extrapolation function
  */
 static VALUE rb_kaplan_meier_3p_extraploation(VALUE self, VALUE time, VALUE censored)
 {
@@ -212,7 +212,7 @@ static VALUE rb_kaplan_meier_3p_extraploation(VALUE self, VALUE time, VALUE cens
 }
 
 /*! 
- *\brief Ruby wrapper C for log_rank_test function
+ *\brief Ruby wrapper for log_rank_test function
  */
 static VALUE rb_log_rank_test(VALUE self, VALUE _time_1, VALUE _cens_1, VALUE _time_2, VALUE _cens_2)
 {

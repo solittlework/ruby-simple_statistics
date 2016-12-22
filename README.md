@@ -41,7 +41,7 @@ hist_median = sstat_hist.hist_median(bin, range)
 sstat_survival = SStat::Surv.new
 # Event time for samples
 time = [1, 2, 3, 4, 5, 6, 7]
-# Cesnroed information
+
 # 1 -> censored. The event time is the patient's last visit time.
 # 0 -> uncensored. The event time is the patient's actual dead time.
 censored = [1, 1, 0, 0, 0, 1, 0]
@@ -54,6 +54,12 @@ sstat_instance.kaplan_meier_3p_extraploation(time, censored)
 
 ``````
 
+#### Log Rank Test
+# time_test_1 -> Event time array for first test
+# cens_test_1 -> Censored array for first test
+# time_test_2 -> Event time array for second test
+# cens_test_2 -> Censored array for second test
+sstat_instance.log_rank_test(time_test_1, cens_test_1, time_test_2, cens_test_2)
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

@@ -118,7 +118,7 @@ int censored_uncensred_each_time_range(double* time, int* censored, int size,  s
 
             count_at++;
 
-            /* reset uncensored_num_at and censored_num_at */
+            /* Reset uncensored_num_at and censored_num_at */
             uncensored_num_at = 0;
             censored_num_at = 0;
 

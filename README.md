@@ -14,6 +14,17 @@ gem 'sstat'
 Install simple statistics gem using:
 ```ruby
 gem install 
+
+```
+
+## Requirements
+```ruby
+ruby (> 2.1)
+```
+
+## Testing
+```ruby
+rake test
 ```
 
 ## Usage

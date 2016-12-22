@@ -213,7 +213,6 @@ int KM_3p_extrapolation(struct CENS_UC_NUM** cens_uc_num, struct CENS_UC_NUM** u
         used_sample_num += (*cens_uc_num)->uncensored[i];
     }
 
-    /* Question: Shall we add error check here? */
     num_left = sample_size - used_sample_num;
 
     for(i = 0; i < 3; i++)

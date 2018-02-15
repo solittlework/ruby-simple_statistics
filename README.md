@@ -61,7 +61,7 @@ censored = [1, 1, 0, 0, 0, 1, 0]
 sstat_survival.kaplan_meier(time, censored)
 
 # Calculate Kaplan-Meier with extrapoloation based on last 3 points
-sstat_instance.kaplan_meier_3p_extraploation(time, censored)
+sstat_survival.kaplan_meier_3p_extraploation(time, censored)
 
 ``````
 
